@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Firebase
+import JGProgressHUD
 
 class RegistrationController: UIViewController {
     
@@ -55,6 +57,7 @@ class RegistrationController: UIViewController {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         button.heightAnchor.constraint(equalToConstant: 55).isActive = true
         button.layer.cornerRadius = 26
+        button.addTarget(self, action: #selector(handleRegistrationButton), for: .touchUpInside)
         return button
     }()
     
@@ -87,6 +90,38 @@ class RegistrationController: UIViewController {
         setupNotificationObservers()
         setupTapGesture()
         setupRegistrationViewModelObserver()
+    }
+    
+    @objc fileprivate func handleRegistrationButton() {
+        self.handleTapDismiss()
+        print("Register user to Firebase Auth!")
+        
+        guard let email = emailTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        Auth.auth().createUser(withEmail: email, password: password) { res, err in
+            
+            if let err = err {
+                print(err)
+                self.showHUDWithError(error: err)
+                return
+            }
+            
+            guard let uid = res?.user.uid else {
+                       print("User UID not found")
+                       return
+                   }
+
+            print("Successfully registered user with uid: \(uid)")
+            
+        }
+    }
+    
+    fileprivate func showHUDWithError(error: Error) {
+        let hud = JGProgressHUD(style: .dark)
+        hud.textLabel.text = "Failed to registered."
+        hud.detailTextLabel.text = error.localizedDescription
+        hud.show(in: self.view)
+        hud.dismiss(afterDelay: 3)
     }
     
     let registrationViewModel = RegistrationViewModel()

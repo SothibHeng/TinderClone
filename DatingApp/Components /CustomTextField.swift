@@ -30,15 +30,13 @@ class CustomTextField: UITextField {
 
         translatesAutoresizingMaskIntoConstraints = false
         heightAnchor.constraint(equalToConstant: 55).isActive = true
-        
     }
-    
+
     override func clearButtonRect(forBounds bounds: CGRect) -> CGRect {
         var rect = super.clearButtonRect(forBounds: bounds)
         rect.origin.x -= 16
         return rect
     }
-
 
     override func textRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.insetBy(dx: padding, dy: 0)
