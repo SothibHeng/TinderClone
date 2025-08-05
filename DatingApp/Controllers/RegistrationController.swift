@@ -86,6 +86,29 @@ class RegistrationController: UIViewController {
         overallStackView.bringSubviewToFront(overallStackView)
         setupNotificationObservers()
         setupTapGesture()
+        setupRegistrationViewModelObserver()
+    }
+    
+    let registrationViewModel = RegistrationViewModel()
+    
+    fileprivate func setupRegistrationViewModelObserver() {
+        registrationViewModel.isFormValidObserver = { [unowned self] isFormValid in
+            print("Is form is valid and it's change? \(isFormValid)")
+            
+            
+            self.registrationButtomView.isEnabled = isFormValid
+            
+            if isFormValid {
+                self.registrationButtomView.backgroundColor = UIColor(red: 207/255, green: 26/255, blue: 85/255, alpha: 1.0)
+                self.registrationButtomView.setTitleColor(.white, for: .normal)
+                registrationButtomView.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+            } else {
+                self.registrationButtomView.backgroundColor = .whiteSmoke
+                self.registrationButtomView.setTitleColor(.gray, for: .normal)
+                self.registrationButtomView.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+            }
+            
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -101,27 +124,13 @@ class RegistrationController: UIViewController {
     @objc fileprivate func handleTextChange(textField: UITextField) {
         if textField == usernameTextField {
             print("Username Changing!")
+            registrationViewModel.username = textField.text
         } else if textField == emailTextField {
             print("Email Changing!")
+            registrationViewModel.email = textField.text
         } else {
             print("Password Changing!")
-        }
-        
-        let isFormValid =
-        usernameTextField.text?.isEmpty == false &&
-        emailTextField.text?.isEmpty == false &&
-        passwordTextField.text?.isEmpty == false
-        
-        registrationButtomView.isEnabled = isFormValid
-        
-        if isFormValid {
-            registrationButtomView.backgroundColor = UIColor(red: 207/255, green: 26/255, blue: 85/255, alpha: 1.0)
-            registrationButtomView.setTitleColor(.white, for: .normal)
-            registrationButtomView.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        } else {
-            registrationButtomView.backgroundColor = .whiteSmoke
-            registrationButtomView.setTitleColor(.gray, for: .normal)
-            registrationButtomView.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+            registrationViewModel.password = textField.text
         }
     }
     
