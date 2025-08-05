@@ -9,6 +9,19 @@ import UIKit
 import Firebase
 import JGProgressHUD
 
+extension RegistrationController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let image = info[.originalImage] as? UIImage
+        self.selectPhotoButtomView.setImage(image?.withRenderingMode(.alwaysOriginal), for: .normal)
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true)
+    }
+}
+
 class RegistrationController: UIViewController {
     
     let selectPhotoButtomView: UIButton = {
@@ -20,6 +33,9 @@ class RegistrationController: UIViewController {
         button.widthAnchor.constraint(equalToConstant: 280).isActive = true
         button.heightAnchor.constraint(equalToConstant: 280).isActive = true
         button.layer.cornerRadius = 16
+        button.imageView?.contentMode = .scaleAspectFill
+        button.clipsToBounds = true
+        button.addTarget(self, action: #selector(handleSelectPhotoButton), for: .touchUpInside)
         return button
     }()
     
@@ -90,6 +106,13 @@ class RegistrationController: UIViewController {
         setupNotificationObservers()
         setupTapGesture()
         setupRegistrationViewModelObserver()
+    }
+    
+    @objc fileprivate func handleSelectPhotoButton() {
+        print("Photo is selected!")
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        present(imagePickerController, animated: true)
     }
     
     @objc fileprivate func handleRegistrationButton() {
