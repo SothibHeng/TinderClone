@@ -15,8 +15,8 @@ class RegistrationController: UIViewController {
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .white
         button.titleLabel?.font = UIFont.systemFont(ofSize: 30, weight: .bold)
-        button.sizeSubView(size: CGSize(width: 280, height: 280))
-        button.isUserInteractionEnabled = false
+        button.widthAnchor.constraint(equalToConstant: 280).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 280).isActive = true
         button.layer.cornerRadius = 16
         return button
     }()
@@ -24,46 +24,36 @@ class RegistrationController: UIViewController {
     let usernameTextField: CustomTextField = {
         let textField = CustomTextField(padding: 24)
         textField.placeholder = "Username"
-        textField.backgroundColor = .white
         textField.textContentType = .username
-        textField.autocorrectionType = .no
-        textField.autocapitalizationType = .none
-        textField.keyboardType = .default
-        textField.isUserInteractionEnabled = true
+        textField.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return textField
     }()
     
     let emailTextField: CustomTextField = {
         let textField = CustomTextField(padding: 24)
         textField.placeholder = "Email"
-        textField.backgroundColor = .white
         textField.textContentType = .emailAddress
-        textField.autocorrectionType = .no
-        textField.autocapitalizationType = .none
-        textField.keyboardType = .default
-        textField.isUserInteractionEnabled = true
+        textField.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return textField
     }()
     
     let passwordTextField: CustomTextField = {
         let textField = CustomTextField(padding: 24)
         textField.placeholder = "Password"
-        textField.backgroundColor = .white
         textField.isSecureTextEntry = true
-        textField.isUserInteractionEnabled = true
-        textField.autocorrectionType = .no
-        textField.autocapitalizationType = .none
-        textField.keyboardType = .default
+        textField.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
+
         return textField
     }()
     
     let registrationButtomView: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Registration", for: .normal)
-        button.backgroundColor = UIColor(red: 207/255, green: 26/255, blue: 85/255, alpha: 1.0)
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .whiteSmoke
+        button.setTitleColor(.gray, for: .disabled)
+        button.isEnabled = false
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        button.sizeSubView(size: CGSize(width: 0, height: 55))
+        button.heightAnchor.constraint(equalToConstant: 55).isActive = true
         button.layer.cornerRadius = 26
         return button
     }()
@@ -98,6 +88,43 @@ class RegistrationController: UIViewController {
         setupTapGesture()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            print("username canBecomeFirstResponder: \(self.usernameTextField.canBecomeFirstResponder)")
+            print("email canBecomeFirstResponder: \(self.emailTextField.canBecomeFirstResponder)")
+            print("password canBecomeFirstResponder: \(self.passwordTextField.canBecomeFirstResponder)")
+        }
+    }
+    
+    @objc fileprivate func handleTextChange(textField: UITextField) {
+        if textField == usernameTextField {
+            print("Username Changing!")
+        } else if textField == emailTextField {
+            print("Email Changing!")
+        } else {
+            print("Password Changing!")
+        }
+        
+        let isFormValid =
+        usernameTextField.text?.isEmpty == false &&
+        emailTextField.text?.isEmpty == false &&
+        passwordTextField.text?.isEmpty == false
+        
+        registrationButtomView.isEnabled = isFormValid
+        
+        if isFormValid {
+            registrationButtomView.backgroundColor = UIColor(red: 207/255, green: 26/255, blue: 85/255, alpha: 1.0)
+            registrationButtomView.setTitleColor(.white, for: .normal)
+            registrationButtomView.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        } else {
+            registrationButtomView.backgroundColor = .whiteSmoke
+            registrationButtomView.setTitleColor(.gray, for: .normal)
+            registrationButtomView.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        }
+    }
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         if self.traitCollection.verticalSizeClass == .compact {
             overallStackView.axis = .horizontal
@@ -109,17 +136,20 @@ class RegistrationController: UIViewController {
     fileprivate func setupLayout() {
         overallStackView.axis = .vertical
         overallStackView.spacing = 10
-        selectPhotoButtomView.sizeSubView(size: CGSize(width: 280, height: 280))
-            
+        overallStackView.translatesAutoresizingMaskIntoConstraints = false
+        selectPhotoButtomView.translatesAutoresizingMaskIntoConstraints = false
+        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
+
         view.addSubview(overallStackView)
-        overallStackView.anchors(
-            top: nil,
-            leading: view.leadingAnchor,
-            leadingConstant: 60,
-            trailing: view.trailingAnchor,
-            trailingConstant: 60, bottom: nil
-        )
-        overallStackView.centerYInSuperview()
+
+        NSLayoutConstraint.activate([
+            selectPhotoButtomView.widthAnchor.constraint(equalToConstant: 280),
+            selectPhotoButtomView.heightAnchor.constraint(equalToConstant: 280),
+
+            overallStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            overallStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            overallStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
+        ])
     }
         
     override func viewWillLayoutSubviews() {
