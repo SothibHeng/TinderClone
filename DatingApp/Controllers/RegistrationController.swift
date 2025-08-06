@@ -152,9 +152,9 @@ class RegistrationController: UIViewController {
     let registrationViewModel = RegistrationViewModel()
     
     fileprivate func setupRegistrationViewModelObserver() {
-        registrationViewModel.isFormValidObserver = { [unowned self] isFormValid in
-            print("Is form is valid and it's change? \(isFormValid)")
+        registrationViewModel.bindableIsFormValid.bind { [unowned self ] isFormValid in
             
+            guard let isFormValid = isFormValid else { return }
             
             self.registrationButtomView.isEnabled = isFormValid
             
@@ -167,10 +167,13 @@ class RegistrationController: UIViewController {
                 self.registrationButtomView.setTitleColor(.gray, for: .normal)
                 self.registrationButtomView.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
             }
+             
         }
+        
         registrationViewModel.bindableImage.bind { [unowned self] img in
             self.selectPhotoButtomView.setImage(img?.withRenderingMode(.alwaysOriginal), for: .normal)
         }
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {

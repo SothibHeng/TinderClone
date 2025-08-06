@@ -11,14 +11,6 @@ class RegistrationViewModel {
     
     var bindableImage = Bindable<UIImage>()
     
-//    var image: UIImage? {
-//        didSet {
-//            imageObserver?(image)
-//        }
-//    }
-//    
-//    var imageObserver: ((UIImage?) -> ())?
-    
     var username: String? {
         didSet {
             checkFormValidity()
@@ -43,9 +35,9 @@ class RegistrationViewModel {
         email?.isEmpty == false &&
         password?.isEmpty == false
         
-        isFormValidObserver?(isFormValid)
+        bindableIsFormValid.value =  isFormValid
     }
     
-    var isFormValidObserver: ((Bool) -> ())?
-    
+    var bindableIsFormValid = Bindable<Bool>(  )
+
 }
