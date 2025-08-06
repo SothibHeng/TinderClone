@@ -133,7 +133,7 @@ class RegistrationController: UIViewController {
     fileprivate func showHUDWithError(error: Error) {
         registeringHUD.dismiss()
         let hud = JGProgressHUD(style: .dark)
-        hud.textLabel.text = "Failed to registered"
+        hud.textLabel.text = "Failed to upload image."
         hud.detailTextLabel.text = error.localizedDescription
         hud.show(in: self.view)
         hud.dismiss(afterDelay: 3)
