@@ -126,6 +126,8 @@ class RegistrationController: UIViewController {
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
         
+        registrationViewModel.bidableIsRegistering.value = true
+        
         Auth.auth().createUser(withEmail: email, password: password) { res, err in
             
             if let err = err {
@@ -134,8 +136,8 @@ class RegistrationController: UIViewController {
                 return
             }
             
-            self.registeringHUD.textLabel.text = "Register is Processig"
-            self.registeringHUD.show(in: self.view)
+//            self.registeringHUD.textLabel.text = "Register is Processig"
+//            self.registeringHUD.show(in: self.view)
             
             guard let uid = res?.user.uid else {
                        print("User UID not found")
@@ -159,7 +161,7 @@ class RegistrationController: UIViewController {
                         return
                     }
                     
-                    self.registeringHUD.dismiss()
+                    self.registrationViewModel.bidableIsRegistering.value = false
                     print("Downlaod URL of image is: ", url?.absoluteString ?? " ")
                 }
             }
@@ -198,6 +200,15 @@ class RegistrationController: UIViewController {
         
         registrationViewModel.bindableImage.bind { [unowned self] img in
             self.selectPhotoButtomView.setImage(img?.withRenderingMode(.alwaysOriginal), for: .normal)
+        }
+        
+        registrationViewModel.bidableIsRegistering.bind { [unowned self] isRegistering in
+            if isRegistering == true {
+                self.registeringHUD.textLabel.text = "Register is Processig"
+                self.registeringHUD.show(in: self.view)
+            } else {
+                self.registeringHUD.dismiss()
+            }
         }
         
     }

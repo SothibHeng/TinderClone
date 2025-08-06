@@ -10,6 +10,8 @@ import UIKit
 class RegistrationViewModel {
     
     var bindableImage = Bindable<UIImage>()
+    var bindableIsFormValid = Bindable<Bool>()
+    var bidableIsRegistering = Bindable<Bool>()
     
     var username: String? {
         didSet {
@@ -37,7 +39,5 @@ class RegistrationViewModel {
         
         bindableIsFormValid.value =  isFormValid
     }
-    
-    var bindableIsFormValid = Bindable<Bool>(  )
 
 }
