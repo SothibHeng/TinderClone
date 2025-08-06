@@ -13,7 +13,9 @@ extension RegistrationController: UIImagePickerControllerDelegate, UINavigationC
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[.originalImage] as? UIImage
-        self.selectPhotoButtomView.setImage(image?.withRenderingMode(.alwaysOriginal), for: .normal)
+        
+        registrationViewModel.image = image
+        
         dismiss(animated: true, completion: nil)
     }
     
@@ -165,7 +167,9 @@ class RegistrationController: UIViewController {
                 self.registrationButtomView.setTitleColor(.gray, for: .normal)
                 self.registrationButtomView.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
             }
-            
+        }
+        registrationViewModel.imageObserver = { [unowned self] img in
+            self.selectPhotoButtomView.setImage(img?.withRenderingMode(.alwaysOriginal), for: .normal)
         }
     }
     
