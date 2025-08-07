@@ -26,12 +26,14 @@ class HomeScreenController: UIViewController {
         topStackView.userButtonView.addTarget(self, action: #selector(handleUserSetting), for: .touchUpInside)
                 
         setupLayout()
-        setupCard()
+        setupFirestoreUserCard()
         fetchUserFromFireStore()
     }
     
     fileprivate func fetchUserFromFireStore() {
-        Firestore.firestore().collection("users").getDocuments { snapsot, err in
+        let query = Firestore.firestore().collection("users")
+//        let query = Firestore.firestore().collection("users").whereField("friends", arrayContains: "Arora")
+        query.getDocuments { snapsot, err in
             if let err = err {
                 print("Falied to fetch user \(err)")
                 return
@@ -43,7 +45,7 @@ class HomeScreenController: UIViewController {
                 self.cardViewModels.append(user.toCardViewModel())
             })
             
-            self.setupCard()
+            self.setupFirestoreUserCard()
         }
     }
     
@@ -52,7 +54,7 @@ class HomeScreenController: UIViewController {
         navigationController?.pushViewController(registrationController, animated: true)
     }
     
-    fileprivate func setupCard() {
+    fileprivate func setupFirestoreUserCard() {
         
         cardViewModels.forEach { cardVM in
             let cardView = CardView(frame: .zero)
