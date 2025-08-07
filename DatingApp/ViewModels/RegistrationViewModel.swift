@@ -79,7 +79,6 @@ class RegistrationViewModel {
                     return
                 }
 
-                // Optional: You could store the URL in Firestore if needed
                 print("Download URL: \(url?.absoluteString ?? "")")
                 self.saveInfoToFirestore(completion: completion)
             }
@@ -88,7 +87,7 @@ class RegistrationViewModel {
 
     fileprivate func saveInfoToFirestore(completion: @escaping (Error?) -> ()) {
         let uid = Auth.auth().currentUser?.uid ?? ""
-        let docData = ["Username": username ?? "", "uid": uid]
+        let docData = ["username": username ?? "", "uid": uid]
         
         print("Saving user info to Firestore with uid: \(uid), username: \(username ?? "")")
         

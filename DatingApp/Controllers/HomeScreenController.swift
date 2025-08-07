@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class HomeScreenController: UIViewController {
     
@@ -15,41 +16,43 @@ class HomeScreenController: UIViewController {
 
     let bottomStackView = HomeBottomControlStackView()
     
-    let cardViewModels: [CardViewModel] = {
-        let producers = [
-            User(
-                name: "Universe",
-                profession: "Singer",
-                imageNames: ["dummyImage1", "dummyImage2", "dummyImage3"],
-                age: 23
-            ),
-            
-            User(
-                name: "Moon",
-                profession: "Teacher",
-                imageNames: ["cat1", "cat2", "cat3"],
-                age: 34
-            ),
-            
-            Advertiser(
-                title: "Card is out of menu",
-                brandName: "Another Universe",
-                photoPosterName: "cute-cat"
-            ),
-            
-            User(
-                name: "Universe",
-                profession: "Singer",
-                imageNames: ["dummyImage1", "dummyImage2", "dummyImage3"],
-                age: 23
-            ),
-        ] as [ProducesCardViewModel]
-        
-        let viewModels = producers.map { producer -> CardViewModel in
-            return producer.toCardViewModel()
-        }
-        return viewModels
-    }()
+//    let cardViewModels: [CardViewModel] = {
+//        let producers = [
+//            User(
+//                name: "Universe",
+//                profession: "Singer",
+//                imageNames: ["dummyImage1", "dummyImage2", "dummyImage3"],
+//                age: 23
+//            ),
+//            
+//            User(
+//                name: "Moon",
+//                profession: "Teacher",
+//                imageNames: ["cat1", "cat2", "cat3"],
+//                age: 34
+//            ),
+//            
+//            Advertiser(
+//                title: "Card is out of menu",
+//                brandName: "Another Universe",
+//                photoPosterName: "cute-cat"
+//            ),
+//            
+//            User(
+//                name: "Universe",
+//                profession: "Singer",
+//                imageNames: ["dummyImage1", "dummyImage2", "dummyImage3"],
+//                age: 23
+//            ),
+//        ] as [ProducesCardViewModel]
+//    
+//        let viewModels = producers.map { producer -> CardViewModel in
+//            return producer.toCardViewModel()
+//        }
+//        return viewModels
+//    }()
+    
+    var cardViewModels = [CardViewModel]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,6 +62,26 @@ class HomeScreenController: UIViewController {
                 
         setupLayout()
         setupCard()
+        fetchUserFromFireStore()
+    }
+    
+    fileprivate func fetchUserFromFireStore() {
+        Firestore.firestore().collection("users").getDocuments { snapsot, err in
+            if let err = err {
+                print("Falied to fetch user \(err)")
+                return
+            }
+            snapsot?.documents.forEach({ documentSnapsot in
+                let userDictionary = documentSnapsot.data()
+                let user = User(dictionary: userDictionary)
+                
+                self.cardViewModels.append(user.toCardViewModel())
+                
+//                print(user.name)
+            })
+            
+            self.setupCard()
+        }
     }
     
     @objc func handleuserSetting() {

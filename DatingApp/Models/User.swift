@@ -7,9 +7,18 @@
 import UIKit
 
 struct User: ProducesCardViewModel {
-    let name, profession: String
+    let name: String
+    let profession: String
     let imageNames: [String]
     let age: Int
+    
+    init(dictionary: [String: Any]) {
+        let name = dictionary["Username"] as? String ?? " "
+        self.age = 0
+        self.profession = "Job Profession"
+        self.name = name
+        self.imageNames = []
+    }
     
     func toCardViewModel() -> CardViewModel {
         let attributedText = NSMutableAttributedString(

@@ -60,7 +60,7 @@ class RegistrationController: UIViewController {
     let passwordTextField: CustomTextField = {
         let textField = CustomTextField(padding: 24)
         textField.placeholder = "Password"
-        textField.isSecureTextEntry = true
+//        textField.isSecureTextEntry = true
         textField.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
 
         return textField
@@ -187,13 +187,13 @@ class RegistrationController: UIViewController {
     
     @objc fileprivate func handleTextChange(textField: UITextField) {
         if textField == usernameTextField {
-            print("Username Changing!")
+//            print("Username Changing!")
             registrationViewModel.username = textField.text
         } else if textField == emailTextField {
-            print("Email Changing!")
+//            print("Email Changing!")
             registrationViewModel.email = textField.text
         } else {
-            print("Password Changing!")
+//            print("Password Changing!")
             registrationViewModel.password = textField.text
         }
     }
@@ -221,7 +221,7 @@ class RegistrationController: UIViewController {
 
             overallStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             overallStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
-            overallStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
+            overallStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
         ])
     }
         
