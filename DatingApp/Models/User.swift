@@ -7,36 +7,59 @@
 import UIKit
 
 struct User: ProducesCardViewModel {
-    let name: String
-    let profession: String
-    let imageNames: [String]
-    let age: Int
+    var name: String?
+    var profession: String?
+    var imageNames: [String]?
+    var age: Int?
+    var uid: String?
     
     init(dictionary: [String: Any]) {
-        let name = dictionary["Username"] as? String ?? " "
-        self.age = 0
-        self.profession = "Job Profession"
-        self.name = name
-        self.imageNames = []
+        self.name = dictionary["username"] as? String ?? "No name found."
+        self.age = dictionary["age"] as? Int ?? 0
+        self.profession = dictionary["profession"] as? String ?? "No profesion found"
+        
+        if let images = dictionary["imageNames"] as? [String], !images.isEmpty {
+            self.imageNames = images
+        } else {
+            let fallbackImages = [
+                ["dummyImage1", "dummyImage2", "dummyImage3"],
+                ["cat1", "cat2", "dummyImage2"],
+                ["cute-cat", "cat2", "cat1"],
+                ["dummyImage3"],
+                ["dummyImage1", "dummyImage2"],
+                ["cat1", "cat2", "dummyImage2"],
+            ]
+            self.imageNames = fallbackImages.randomElement() ?? ["No image found"]
+        }
+        
+        self.uid = dictionary["uid"] as? String ?? "No UID found"
     }
     
     func toCardViewModel() -> CardViewModel {
         let attributedText = NSMutableAttributedString(
-            string: name,
+            string: name ?? "",
             attributes: [.font: UIFont.systemFont(ofSize: 26, weight: .bold)]
         )
         
+        let ageString = age != nil ? "\(age!)" : "N/A"
+        
         attributedText.append(NSMutableAttributedString(
-            string: "  \(age)",
+            string: "  \(ageString)",
             attributes: [.font: UIFont.systemFont(ofSize: 26, weight: .regular)]
         ))
         
+        let professionString = profession != nil ? "\(profession!)" : "Not Provide"
+        
         attributedText.append(NSMutableAttributedString(
-            string: "\n\(profession)",
+            string: "\n\(professionString )",
             attributes: [.font: UIFont.systemFont(ofSize: 20, weight: .regular)]
         ))
           
-        return CardViewModel(imageNames: imageNames, attributedString: attributedText, textAlignment: .left )
+        return CardViewModel(
+            imageNames: imageNames ?? [],
+            attributedString: attributedText,
+            textAlignment: .left
+        )
     }
 }
 

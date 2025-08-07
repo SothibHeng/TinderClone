@@ -16,41 +16,6 @@ class HomeScreenController: UIViewController {
 
     let bottomStackView = HomeBottomControlStackView()
     
-//    let cardViewModels: [CardViewModel] = {
-//        let producers = [
-//            User(
-//                name: "Universe",
-//                profession: "Singer",
-//                imageNames: ["dummyImage1", "dummyImage2", "dummyImage3"],
-//                age: 23
-//            ),
-//            
-//            User(
-//                name: "Moon",
-//                profession: "Teacher",
-//                imageNames: ["cat1", "cat2", "cat3"],
-//                age: 34
-//            ),
-//            
-//            Advertiser(
-//                title: "Card is out of menu",
-//                brandName: "Another Universe",
-//                photoPosterName: "cute-cat"
-//            ),
-//            
-//            User(
-//                name: "Universe",
-//                profession: "Singer",
-//                imageNames: ["dummyImage1", "dummyImage2", "dummyImage3"],
-//                age: 23
-//            ),
-//        ] as [ProducesCardViewModel]
-//    
-//        let viewModels = producers.map { producer -> CardViewModel in
-//            return producer.toCardViewModel()
-//        }
-//        return viewModels
-//    }()
     
     var cardViewModels = [CardViewModel]()
     
@@ -58,7 +23,7 @@ class HomeScreenController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
-        topStackView.userButtonView.addTarget(self, action: #selector(handleuserSetting), for: .touchUpInside)
+        topStackView.userButtonView.addTarget(self, action: #selector(handleUserSetting), for: .touchUpInside)
                 
         setupLayout()
         setupCard()
@@ -76,15 +41,13 @@ class HomeScreenController: UIViewController {
                 let user = User(dictionary: userDictionary)
                 
                 self.cardViewModels.append(user.toCardViewModel())
-                
-//                print(user.name)
             })
             
             self.setupCard()
         }
     }
     
-    @objc func handleuserSetting() {
+    @objc func handleUserSetting() {
         let registrationController = RegistrationController()
         navigationController?.pushViewController(registrationController, animated: true)
     }
