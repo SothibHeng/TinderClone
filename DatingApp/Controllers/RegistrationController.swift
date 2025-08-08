@@ -108,6 +108,8 @@ class RegistrationController: UIViewController {
         setupNotificationObservers()
         setupTapGesture()
         setupRegistrationViewModelObserver()
+        
+        self.navigationItem.hidesBackButton = true
     }
     
     @objc fileprivate func handleSelectPhotoButton() {

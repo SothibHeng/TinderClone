@@ -15,7 +15,7 @@ class HomeTopControlStackView: UIStackView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+                
         flameButtonView.sizeSubView(size: CGSize(width: 30, height: 30))
         
         if let userImage = UIImage(named: "user")?.withRenderingMode(.alwaysTemplate) {

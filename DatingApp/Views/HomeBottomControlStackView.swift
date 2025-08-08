@@ -23,18 +23,6 @@ class HomeBottomControlStackView: UIStackView {
         return button
     }
     
-    static func createButton(imageName: String) -> UIButton {
-        let button = UIButton(type: .system)
-        if let image = UIImage(named: imageName) {
-            button.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
-        } else {
-            print("Warning: Image '\(imageName)' not found.")
-        }
-        button.contentMode = .scaleAspectFill
-        button.clipsToBounds = true
-        return button
-    }
-    
     let refreshButtomView = createButton(
         imageName: "refresh",
         size: CGSize(width: 23, height: 23)
