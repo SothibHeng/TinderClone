@@ -82,7 +82,6 @@ class CardView: UIView {
         
         setupBarStackView()
         
-        //gradient
         setupGradientLayer()
         
         addSubview(informationLabel)
