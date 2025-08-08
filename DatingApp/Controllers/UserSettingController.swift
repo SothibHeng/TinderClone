@@ -63,41 +63,6 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         setupTableHeader()
     }
     
-    lazy var header: UIView = {
-        let header = UIView()
-        
-        header.addSubview(firstImagebuttonView)
-        firstImagebuttonView.anchors(
-            top: header.topAnchor,
-            leading: header.leadingAnchor,
-            leadingConstant: paddingSize,
-            trailing: nil,
-            bottom: header.bottomAnchor
-        )
-        firstImagebuttonView.widthAnchor.constraint(equalTo: header.widthAnchor, multiplier: 0.45).isActive = true
-        
-        let verticalStackView = UIStackView(arrangedSubviews: [
-            secondImagebuttonView,
-            thirdImagebuttonView
-        ])
-        
-        header.addSubview(verticalStackView)
-        verticalStackView.anchors(
-            top: header.topAnchor,
-            leading: firstImagebuttonView.trailingAnchor,
-            leadingConstant: paddingSize,
-            trailing: header.trailingAnchor,
-            trailingConstant: paddingSize,
-            bottom: header.bottomAnchor
-        )
-         
-        verticalStackView.axis = .vertical
-        verticalStackView.spacing = paddingSize
-        verticalStackView.distribution = .fillEqually
-        
-        return header
-    }()
-    
     class HeaderLabel: UILabel {
         override func drawText(in rect: CGRect) {
             super.drawText(in: rect.insetBy(dx: 16, dy: 0))
