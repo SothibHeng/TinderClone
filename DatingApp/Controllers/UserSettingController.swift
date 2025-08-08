@@ -42,8 +42,8 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         button.setTitle("Select Photo", for: .normal)
         button.backgroundColor = .white
         button.layer.cornerRadius = imageButtonViewRadiusSize
-        button.clipsToBounds = true
         button.contentMode = .scaleAspectFill
+        button.clipsToBounds = true
         button.addTarget(self, action: selector, for: .touchUpInside)
         return button
     }
@@ -54,13 +54,17 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         tableView.backgroundColor = .whiteSmoke
         
         self.navigationItem.hidesBackButton = true
+        self.tableView.separatorStyle = .none
+        tableView.tableFooterView = UIView()
+        
+        tableView.keyboardDismissMode = .interactive
         
         setupNavigationItems()
+        setupTableHeader()
     }
     
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    lazy var header: UIView = {
         let header = UIView()
-//        header.backgroundColor = .cyan
         
         header.addSubview(firstImagebuttonView)
         firstImagebuttonView.anchors(
@@ -92,11 +96,91 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         verticalStackView.distribution = .fillEqually
         
         return header
+    }()
+    
+    class HeaderLabel: UILabel {
+        override func drawText(in rect: CGRect) {
+            super.drawText(in: rect.insetBy(dx: 16, dy: 0))
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        let headerLabel = HeaderLabel()
+        switch section {
+        case 0:
+            headerLabel.text = "Name"
+        case 1:
+            headerLabel.text = "Profession"
+        case 2:
+            headerLabel.text = "Age"
+        default:
+            headerLabel.text = "Bio"
+        }
+        return headerLabel
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 300
+        return 40
     }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 4
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UserSettingCell(style: .default, reuseIdentifier: nil)
+        switch indexPath.section {
+        case 0:
+            cell.textField.placeholder = "Enter Name"
+        case 1:
+            cell.textField.placeholder = "Enter Profession"
+        case 2:
+            cell.textField.placeholder = "Enter Age"
+        default:
+            cell.textField.placeholder = "Enter Bio"
+        }
+        return cell
+    }
+    
+    fileprivate func setupTableHeader() {
+        let header = UIView()
+        header.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 300)
+
+        header.addSubview(firstImagebuttonView)
+        firstImagebuttonView.anchors(
+            top: header.topAnchor,
+            leading: header.leadingAnchor,
+            leadingConstant: paddingSize,
+            bottom: header.bottomAnchor
+        )
+        firstImagebuttonView.widthAnchor.constraint(equalTo: header.widthAnchor, multiplier: 0.45).isActive = true
+
+        let verticalStackView = UIStackView(arrangedSubviews: [
+            secondImagebuttonView,
+            thirdImagebuttonView
+        ])
+        verticalStackView.axis = .vertical
+        verticalStackView.spacing = paddingSize
+        verticalStackView.distribution = .fillEqually
+
+        header.addSubview(verticalStackView)
+        verticalStackView.anchors(
+            top: header.topAnchor,
+            leading: firstImagebuttonView.trailingAnchor,
+            leadingConstant: paddingSize,
+            trailing: header.trailingAnchor,
+            trailingConstant: paddingSize,
+            bottom: header.bottomAnchor
+        )
+
+        tableView.tableHeaderView = header
+    }
+
     
     fileprivate func setupNavigationItems() {
         navigationItem.title = "Settings"
