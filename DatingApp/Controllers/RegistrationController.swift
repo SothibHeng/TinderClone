@@ -43,7 +43,7 @@ class RegistrationController: UIViewController {
     
     let usernameTextField: CustomTextField = {
         let textField = CustomTextField(padding: 24)
-        textField.placeholder = "username"
+        textField.placeholder = "universe"
         textField.textContentType = .username
         textField.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return textField
@@ -51,7 +51,7 @@ class RegistrationController: UIViewController {
     
     let emailTextField: CustomTextField = {
         let textField = CustomTextField(padding: 24)
-        textField.placeholder = "email"
+        textField.placeholder = "universe@gmail.com"
         textField.textContentType = .emailAddress
         textField.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return textField
@@ -60,7 +60,7 @@ class RegistrationController: UIViewController {
     let passwordTextField: CustomTextField = {
         let textField = CustomTextField(padding: 24)
         textField.placeholder = "password"
-//        textField.isSecureTextEntry = true
+        textField.isSecureTextEntry = true
         textField.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
 
         return textField

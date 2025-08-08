@@ -10,7 +10,12 @@ import UIKit
 class CustomImagePickerController: UIImagePickerController {
     
     var imageButton: UIButton?
-    
+}
+
+class HeaderLabel: UILabel {
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.insetBy(dx: 16, dy: 0))
+    }
 }
 
 class UserSettingController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -61,12 +66,12 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         
         setupNavigationItems()
         setupTableHeader()
+        fetchCurrentUser()
     }
     
-    class HeaderLabel: UILabel {
-        override func drawText(in rect: CGRect) {
-            super.drawText(in: rect.insetBy(dx: 16, dy: 0))
-        }
+    fileprivate func fetchCurrentUser() {
+        // Home work
+        // Dismiss keyboard when touch outwhere of textfield
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -145,7 +150,6 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
 
         tableView.tableHeaderView = header
     }
-
     
     fileprivate func setupNavigationItems() {
         navigationItem.title = "Settings"
