@@ -148,6 +148,9 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             let ageRangeCell = AgeRangeCell(style: .default, reuseIdentifier: nil)
             ageRangeCell.minSliderView.addTarget(self, action: #selector(handleMinAgeSliderChange), for: .valueChanged)
             ageRangeCell.maxSliderView.addTarget(self, action: #selector(handleMaxAgeSliderChange), for: .valueChanged)
+            
+            ageRangeCell.minSliderLabel.text = "Min: \(user?.minAge ?? -1)"
+            ageRangeCell.maxSliderLabel.text = "Max: \(user?.maxAge ?? -1)"
             return ageRangeCell
         }
         
