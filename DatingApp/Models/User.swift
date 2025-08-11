@@ -12,16 +12,23 @@ struct User: ProducesCardViewModel {
     var imageNames: [String]?
     var age: Int?
     var uid: String?
+    var bio: String?
     
     init(dictionary: [String: Any]) {
         if let name = dictionary["username"] as? String {
             self.name = name
         }
+        
         if let age = dictionary["age"] as? Int {
             self.age = age
         }
+        
         if let profession = dictionary["profession"] as? String {
             self.profession = profession
+        }
+        
+        if let bio = dictionary["bio"] as? String {
+            self.bio = bio
         }
 
         if let images = dictionary["imageNames"] as? [String], !images.isEmpty {

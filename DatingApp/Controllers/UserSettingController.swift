@@ -82,8 +82,8 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
                 return
             }
             
-             guard let dictionary = snapshot?.data() else { return }
-             self.user = User(dictionary: dictionary)
+            guard let dictionary = snapshot?.data() else { return }
+            self.user = User(dictionary: dictionary)
             
             self.loadUserPhotos()
             
@@ -93,9 +93,9 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
     
     fileprivate func loadUserPhotos() {
         guard let images = user?.imageNames else { return }
-
+        
         let buttons = [firstImagebuttonView, secondImagebuttonView, thirdImagebuttonView]
-
+        
         for (index, button) in buttons.enumerated() {
             if index < images.count {
                 let imageName = images[index]
@@ -158,26 +158,29 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             cell.textField.addTarget(self, action: #selector(handleAgeChange), for: .editingChanged)
         default:
             cell.textField.placeholder = "Enter Bio"
+            cell.textField.text = user?.bio
+            cell.textField.addTarget(self, action: #selector(handleBioChange), for: .editingChanged)
         }
         return cell
     }
     
     @objc fileprivate func handleUsernameChange(textField: UITextField) {
-//        print("Username change: \(textField.text ?? " ")")
         self.user?.name = textField.text
     }
     
     @objc fileprivate func handleProfessionChange(textField: UITextField) {
-//        print("Username change: \(textField.text ?? " ")")
         self.user?.profession = textField.text
     }
     
     @objc fileprivate func handleAgeChange(textField: UITextField) {
-//        print("Username change: \(textField.text ?? " ")")
         if let text = textField.text,
            let age = Int(text) {
             self.user?.age = age
         }
+    }
+    
+    @objc fileprivate func handleBioChange(textField: UITextField) {
+        self.user?.bio = textField.text
     }
     
     fileprivate func setupTableHeader() {
@@ -233,11 +236,11 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             "username": user?.name ?? " ",
             "age": user?.age ?? -1,
             "profession": user?.profession ?? "",
-            "bio": "I love you in very universe."
+            "bio": user?.bio ?? ""
         ]
         
         let hud = JGProgressHUD(style: .dark)
-        hud.textLabel.text = "Saving Settins"
+        hud.textLabel.text = "Saving Settings"
         hud.show(in: view)
         Firestore.firestore().collection("users").document(uid).setData(docData) { err in
             hud.dismiss()
@@ -245,8 +248,6 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
                 print("failed to save user settings to firebase store.")
                 return
             }
-            
-            // in case success
             print("User settings has saved successfully!")
         }
     }
