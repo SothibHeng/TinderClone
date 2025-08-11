@@ -121,9 +121,12 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             headerLabel.text = "Profession"
         case 2:
             headerLabel.text = "Age"
-        default:
+        case 3:
             headerLabel.text = "Bio"
+        default:
+            headerLabel.text = "Raging Age"
         }
+        headerLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         return headerLabel
     }
     
@@ -132,7 +135,7 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -140,6 +143,14 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        if indexPath.section == 4 {
+            let ageRangeCell = AgeRangeCell(style: .default, reuseIdentifier: nil)
+            ageRangeCell.minSliderView.addTarget(self, action: #selector(handleMinAgeSliderChange), for: .valueChanged)
+            ageRangeCell.maxSliderView.addTarget(self, action: #selector(handleMaxAgeSliderChange), for: .valueChanged)
+            return ageRangeCell
+        }
+        
         let cell = UserSettingCell(style: .default, reuseIdentifier: nil)
         switch indexPath.section {
         case 0:
@@ -156,10 +167,13 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
                 cell.textField.text = String(age)
             }
             cell.textField.addTarget(self, action: #selector(handleAgeChange), for: .editingChanged)
-        default:
+            
+        case 3:
             cell.textField.placeholder = "Enter Bio"
             cell.textField.text = user?.bio
             cell.textField.addTarget(self, action: #selector(handleBioChange), for: .editingChanged)
+        default:
+            cell.textField.placeholder = "Range your age"
         }
         return cell
     }
@@ -181,6 +195,14 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
     
     @objc fileprivate func handleBioChange(textField: UITextField) {
         self.user?.bio = textField.text
+    }
+    
+    @objc fileprivate func handleMinAgeSliderChange(slider: UISlider) {
+        print(slider.value)
+    }
+    
+    @objc fileprivate func handleMaxAgeSliderChange(slider: UISlider) {
+        print(slider.value)
     }
     
     fileprivate func setupTableHeader() {
