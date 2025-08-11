@@ -31,7 +31,7 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
     let imageButtonViewRadiusSize: CGFloat = 8
     
     @objc fileprivate func handleSelectPhoto(button: UIButton) {
-        print("Button eas clicked..!\(button)")
+        print("Button was clicked..!\(button)")
         let imagePicker = CustomImagePickerController()
         imagePicker.delegate = self
         imagePicker.imageButton = button
@@ -87,7 +87,6 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             
             self.loadUserPhotos()
             
-            
             self.tableView.reloadData()
         }
     }
@@ -111,7 +110,6 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             }
         }
     }
-
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         

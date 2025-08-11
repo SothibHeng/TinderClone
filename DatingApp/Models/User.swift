@@ -14,10 +14,16 @@ struct User: ProducesCardViewModel {
     var uid: String?
     
     init(dictionary: [String: Any]) {
-        self.name = dictionary["username"] as? String ?? "No name found."
-        self.age = dictionary["age"] as? Int ?? 0
-        self.profession = dictionary["profession"] as? String ?? "No profesion found"
-        
+        if let name = dictionary["username"] as? String {
+            self.name = name
+        }
+        if let age = dictionary["age"] as? Int {
+            self.age = age
+        }
+        if let profession = dictionary["profession"] as? String {
+            self.profession = profession
+        }
+
         if let images = dictionary["imageNames"] as? [String], !images.isEmpty {
             self.imageNames = images
         } else {
