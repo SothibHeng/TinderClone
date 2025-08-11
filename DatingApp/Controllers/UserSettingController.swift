@@ -72,10 +72,8 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         fetchCurrentUser()
     }
     
-    // case user to instance varible so we can access
     var user: User?
     
-    // fetch and show user setting on ui
     fileprivate func fetchCurrentUser() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         Firestore.firestore().collection("users").document(uid).getDocument { snapshot, err in
@@ -84,7 +82,6 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
                 return
             }
             
-             // fetch data
              guard let dictionary = snapshot?.data() else { return }
              self.user = User(dictionary: dictionary)
             
