@@ -201,6 +201,8 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         let indexPath = IndexPath(row: 0, section: 4)
         let ageRangeCell = tableView.cellForRow(at: indexPath) as! AgeRangeCell
         ageRangeCell.minSliderLabel.text = "Min: \(Int(slider.value))"
+        
+        self.user?.minAge = Int(slider.value)
     }
     
     @objc fileprivate func handleMaxAgeSliderChange(slider: UISlider) {
@@ -208,6 +210,8 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         let indexPath = IndexPath(row: 0, section: 4)
         let ageRangeCell = tableView.cellForRow(at: indexPath) as! AgeRangeCell
         ageRangeCell.maxSliderLabel.text = "Max: \(Int(slider.value))"
+        
+        self.user?.maxAge = Int(slider.value)
     }
     
     fileprivate func setupTableHeader() {
@@ -263,7 +267,9 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             "username": user?.name ?? " ",
             "age": user?.age ?? -1,
             "profession": user?.profession ?? "",
-            "bio": user?.bio ?? ""
+            "bio": user?.bio ?? "",
+            "minAge": user?.minAge ?? -1,
+            "maxAge": user?.maxAge ?? -1
         ]
         
         let hud = JGProgressHUD(style: .dark)

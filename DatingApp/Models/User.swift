@@ -14,6 +14,9 @@ struct User: ProducesCardViewModel {
     var uid: String?
     var bio: String?
     
+    var minAge: Int?
+    var maxAge: Int?
+    
     init(dictionary: [String: Any]) {
         if let name = dictionary["username"] as? String {
             self.name = name
@@ -29,6 +32,14 @@ struct User: ProducesCardViewModel {
         
         if let bio = dictionary["bio"] as? String {
             self.bio = bio
+        }
+        
+        if let minAge = dictionary["minAge"] as? Int {
+            self.minAge = minAge
+        }
+        
+        if let maxAge = dictionary["maxAge"] as? Int {
+            self.maxAge = maxAge
         }
 
         if let images = dictionary["imageNames"] as? [String], !images.isEmpty {
