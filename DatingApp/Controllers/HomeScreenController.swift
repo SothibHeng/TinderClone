@@ -9,7 +9,7 @@ import UIKit
 import Firebase
 import JGProgressHUD
 
-class HomeScreenController: UIViewController {
+class HomeScreenController: UIViewController, UserSettingControllerDelegate  {
     
     let topStackView = HomeTopControlStackView()
     
@@ -66,10 +66,13 @@ class HomeScreenController: UIViewController {
         let hud = JGProgressHUD(style: .dark)
         hud.textLabel.text = "Fetch User"
         hud.show(in: view)
+//        // fitter fetch only 2 users
 //        let query = Firestore.firestore().collection("users").order(by: "uid").start(after: [lastFetchedUser?.uid ?? " "]).limit(to:  2)
-        
-        let query = Firestore.firestore().collection("users").whereField("age", isGreaterThan: minAge)
-            .whereField("age", isLessThan: maxAge)
+
+        // fittler base on user ranging age
+        let query = Firestore.firestore().collection("users").whereField("age", isGreaterThanOrEqualTo: minAge)
+            .whereField("age", isLessThanOrEqualTo: maxAge)
+         
         query.getDocuments { snapsot, err in
             hud.dismiss()
             if let err = err {
@@ -98,9 +101,15 @@ class HomeScreenController: UIViewController {
     
     @objc func handleUserSetting() {
         let userSettingController = UserSettingController()
+        userSettingController.delegate = self
         let navController =  UINavigationController(rootViewController: userSettingController)
         navController.modalPresentationStyle = .fullScreen
         present(navController, animated: true)
+    }
+    
+    func didSaveSettings() {
+        print("Notified of dismissal from UserSettingController in HomeScreeenController.")
+        fetchCurrentUser()
     }
     
     fileprivate func setupFirestoreUserCard() {

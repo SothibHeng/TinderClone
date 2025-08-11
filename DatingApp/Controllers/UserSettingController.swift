@@ -10,6 +10,10 @@ import Firebase
 import JGProgressHUD
 import SDWebImage
 
+protocol UserSettingControllerDelegate {
+    func didSaveSettings()
+}
+
 class CustomImagePickerController: UIImagePickerController {
     
     var imageButton: UIButton?
@@ -22,6 +26,9 @@ class HeaderLabel: UILabel {
 }
 
 class UserSettingController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    var delegate: UserSettingControllerDelegate?
+    
     
     lazy var firstImagebuttonView = createButton(selector: #selector(handleSelectPhoto))
     lazy var secondImagebuttonView = createButton(selector: #selector(handleSelectPhoto))
@@ -285,6 +292,10 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
                 return
             }
             print("User settings has saved successfully!")
+            self.dismiss(animated: true) {
+                print("Dismissal completed!")
+                self.delegate?.didSaveSettings()
+            }
         }
     }
     
