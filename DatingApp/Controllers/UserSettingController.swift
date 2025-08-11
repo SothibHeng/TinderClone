@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import Firebase
+import JGProgressHUD
+import SDWebImage
 
 class CustomImagePickerController: UIImagePickerController {
     
@@ -46,9 +49,9 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         let button = UIButton(type: .system)
         button.setTitle("Select Photo", for: .normal)
         button.backgroundColor = .white
-        button.layer.cornerRadius = imageButtonViewRadiusSize
-        button.contentMode = .scaleAspectFill
-        button.clipsToBounds = true
+        button.imageView?.layer.cornerRadius = imageButtonViewRadiusSize
+        button.imageView?.clipsToBounds = true
+        button.imageView?.contentMode = .scaleAspectFill
         button.addTarget(self, action: selector, for: .touchUpInside)
         return button
     }
@@ -69,10 +72,49 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         fetchCurrentUser()
     }
     
+    // case user to instance varible so we can access
+    var user: User?
+    
+    // fetch and show user setting on ui
     fileprivate func fetchCurrentUser() {
-        // Home work
-        // Dismiss keyboard when touch outwhere of textfield
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        Firestore.firestore().collection("users").document(uid).getDocument { snapshot, err in
+            if let err = err {
+                print(err)
+                return
+            }
+            
+             // fetch data
+             guard let dictionary = snapshot?.data() else { return }
+             self.user = User(dictionary: dictionary)
+            
+            self.loadUserPhotos()
+            
+            
+            self.tableView.reloadData()
+        }
     }
+    
+    fileprivate func loadUserPhotos() {
+        guard let images = user?.imageNames else { return }
+
+        let buttons = [firstImagebuttonView, secondImagebuttonView, thirdImagebuttonView]
+
+        for (index, button) in buttons.enumerated() {
+            if index < images.count {
+                let imageName = images[index]
+                
+                if imageName.hasPrefix(" ") {
+                    button.sd_setImage(with: URL(string: imageName), for: .normal)
+                } else {
+                    button.setImage(UIImage(named: imageName)?.withRenderingMode(.alwaysOriginal), for: .normal)
+                }
+            } else {
+                button.setImage(UIImage(named: "No image has found!"), for: .normal)
+            }
+        }
+    }
+
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
@@ -107,10 +149,15 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         switch indexPath.section {
         case 0:
             cell.textField.placeholder = "Enter Name"
+            cell.textField.text = user?.name
         case 1:
             cell.textField.placeholder = "Enter Profession"
+            cell.textField.text = user?.profession
         case 2:
             cell.textField.placeholder = "Enter Age"
+            if let age = user?.age {
+                cell.textField.text = String(age)
+            }
         default:
             cell.textField.placeholder = "Enter Bio"
         }
