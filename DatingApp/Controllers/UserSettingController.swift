@@ -145,18 +145,39 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         case 0:
             cell.textField.placeholder = "Enter Name"
             cell.textField.text = user?.name
+            cell.textField.addTarget(self, action: #selector(handleUsernameChange), for: .editingChanged)
         case 1:
             cell.textField.placeholder = "Enter Profession"
             cell.textField.text = user?.profession
+            cell.textField.addTarget(self, action: #selector(handleProfessionChange), for: .editingChanged)
         case 2:
             cell.textField.placeholder = "Enter Age"
             if let age = user?.age {
                 cell.textField.text = String(age)
             }
+            cell.textField.addTarget(self, action: #selector(handleAgeChange), for: .editingChanged)
         default:
             cell.textField.placeholder = "Enter Bio"
         }
         return cell
+    }
+    
+    @objc fileprivate func handleUsernameChange(textField: UITextField) {
+//        print("Username change: \(textField.text ?? " ")")
+        self.user?.name = textField.text
+    }
+    
+    @objc fileprivate func handleProfessionChange(textField: UITextField) {
+//        print("Username change: \(textField.text ?? " ")")
+        self.user?.profession = textField.text
+    }
+    
+    @objc fileprivate func handleAgeChange(textField: UITextField) {
+//        print("Username change: \(textField.text ?? " ")")
+        if let text = textField.text,
+           let age = Int(text) {
+            self.user?.age = age
+        }
     }
     
     fileprivate func setupTableHeader() {
@@ -198,9 +219,36 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(title: "Svae", style: .plain, target: self, action: #selector(handleCancel)),
+            UIBarButtonItem(title: "Svae", style: .plain, target: self, action: #selector(handleSave)),
             UIBarButtonItem(title: "Signout", style: .plain, target: self, action: #selector(handleCancel))
         ]
+    }
+    
+    @objc fileprivate func handleSave() {
+        print("User settings has save!")
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let docData: [String: Any] = [
+            "uid": user?.uid ?? " ",
+            "username": user?.name ?? " ",
+            "age": user?.age ?? -1,
+            "profession": user?.profession ?? "",
+            "bio": "I love you in very universe."
+        ]
+        
+        let hud = JGProgressHUD(style: .dark)
+        hud.textLabel.text = "Saving Settins"
+        hud.show(in: view)
+        Firestore.firestore().collection("users").document(uid).setData(docData) { err in
+            hud.dismiss()
+            if let err = err {
+                print("failed to save user settings to firebase store.")
+                return
+            }
+            
+            // in case success
+            print("User settings has saved successfully!")
+        }
     }
     
     @objc fileprivate func handleCancel() {

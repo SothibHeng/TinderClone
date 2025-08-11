@@ -27,7 +27,7 @@ struct User: ProducesCardViewModel {
         if let images = dictionary["imageNames"] as? [String], !images.isEmpty {
             self.imageNames = images
         } else {
-            let fallbackImages = [
+            let fallbackImages = [ 
                 ["dummyImage1", "dummyImage2", "dummyImage3"],
                 ["cat1", "cat2", "dummyImage2"],
                 ["cute-cat", "cat2", "cat1"],
