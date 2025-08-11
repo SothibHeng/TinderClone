@@ -198,11 +198,16 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
     }
     
     @objc fileprivate func handleMinAgeSliderChange(slider: UISlider) {
-        print(slider.value)
+        let indexPath = IndexPath(row: 0, section: 4)
+        let ageRangeCell = tableView.cellForRow(at: indexPath) as! AgeRangeCell
+        ageRangeCell.minSliderLabel.text = "Min: \(Int(slider.value))"
     }
     
     @objc fileprivate func handleMaxAgeSliderChange(slider: UISlider) {
         print(slider.value)
+        let indexPath = IndexPath(row: 0, section: 4)
+        let ageRangeCell = tableView.cellForRow(at: indexPath) as! AgeRangeCell
+        ageRangeCell.maxSliderLabel.text = "Max: \(Int(slider.value))"
     }
     
     fileprivate func setupTableHeader() {
