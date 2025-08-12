@@ -270,8 +270,9 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             try? Auth.auth().signOut()
             
             let signInController = SigninViewController()
-            signInController.modalPresentationStyle = .fullScreen
-            self.present(signInController, animated: true)
+            let navController = UINavigationController(rootViewController: signInController)
+            navController.modalPresentationStyle = .fullScreen
+            self.present(navController, animated: true)
         })
         
         present(signoutModal, animated: true)
