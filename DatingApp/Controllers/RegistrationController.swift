@@ -167,8 +167,7 @@ class RegistrationController: UIViewController {
         print("Signin button was taped!")
         let signinController = UIViewController()
         signinController.view.backgroundColor = .cyan
-        signinController.modalPresentationStyle = .fullScreen
-        present(signinController, animated: true)
+        navigationController?.pushViewController(signinController, animated: true)
     }
     
     fileprivate func showHUDWithError(error: Error) {
