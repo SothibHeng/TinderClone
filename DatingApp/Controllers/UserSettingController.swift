@@ -256,8 +256,24 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(title: "Svae", style: .plain, target: self, action: #selector(handleSave)),
-            UIBarButtonItem(title: "Signout", style: .plain, target: self, action: #selector(handleCancel))
+            UIBarButtonItem(title: "Signout", style: .plain, target: self, action: #selector(handleSignout))
         ]
+    }
+    
+    @objc fileprivate func handleSignout() {
+        let signoutModal = UIAlertController(
+            title: "Sign Out", message: "Are you sure you want to signout?", preferredStyle: .alert
+        )
+        
+        signoutModal.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        signoutModal.addAction(UIAlertAction(title: "Signout", style: .destructive) { _ in
+            let registrationController = RegistrationController()
+            registrationController.modalPresentationStyle = .fullScreen
+            self.present(registrationController, animated: true)
+            print("Successfully signout!")
+        })
+        
+        present(signoutModal, animated: true)
     }
     
     @objc fileprivate func handleSave() {
