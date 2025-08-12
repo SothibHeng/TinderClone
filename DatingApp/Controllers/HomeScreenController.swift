@@ -37,10 +37,9 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate  {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print("Home controller view did appear!!!")
-        // kick the user out when user successfully signout
         if Auth.auth().currentUser == nil {
-            let registrationController = RegistrationController()
-            let navController = UINavigationController(rootViewController: registrationController)
+            let signInController = SigninViewController()
+            let navController = UINavigationController(rootViewController: signInController)
             navController.modalPresentationStyle = .fullScreen
             self.present(navController, animated: true)
         }

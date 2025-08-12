@@ -269,9 +269,9 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         signoutModal.addAction(UIAlertAction(title: "Signout", style: .destructive) { _ in
             try? Auth.auth().signOut()
             
-            let registrationController = RegistrationController()
-            registrationController.modalPresentationStyle = .fullScreen
-            self.present(registrationController, animated: true)
+            let signInController = SigninViewController()
+            signInController.modalPresentationStyle = .fullScreen
+            self.present(signInController, animated: true)
         })
         
         present(signoutModal, animated: true)

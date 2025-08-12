@@ -26,6 +26,24 @@ extension RegistrationController: UIImagePickerControllerDelegate, UINavigationC
 
 class RegistrationController: UIViewController {
     
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Sign Up"
+        label.textColor = .whiteSmoke
+        label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
+        label.textAlignment = .center
+        return label
+    }()
+    
+    let subtitlelabel: UILabel = {
+        let label = UILabel()
+        label.text = "Create your account."
+        label.textColor = .whiteSmoke
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
+    }()
+    
     let selectPhotoButtomView: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Select Photo", for: .normal)
@@ -98,6 +116,17 @@ class RegistrationController: UIViewController {
         return button
     }()
     
+    lazy var titleAndSubtitleStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            titleLabel,
+            subtitlelabel
+        ])
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        stackView.spacing = 8
+        return stackView
+    }()
+    
     lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             usernameTextField,
@@ -160,13 +189,13 @@ class RegistrationController: UIViewController {
             }
             
             print("Finised registering proccess.")
+            self?.dismiss(animated: true)
         }
     }
     
     @objc fileprivate func handleSigninButton() {
         print("Signin button was taped!")
-        let signinController = UIViewController()
-        signinController.view.backgroundColor = .cyan
+        let signinController = SigninViewController()
         navigationController?.pushViewController(signinController, animated: true)
     }
     
@@ -250,6 +279,15 @@ class RegistrationController: UIViewController {
             overallStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             overallStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
         ])
+        
+        
+        view.addSubview(titleAndSubtitleStackView)
+        titleAndSubtitleStackView.anchors(
+            top: view.safeAreaLayoutGuide.topAnchor,
+            leading: view.leadingAnchor,
+            trailing: view.trailingAnchor,
+            bottom: nil
+        )
         
         view.addSubview(signinStackView)
         signinStackView.anchors(
