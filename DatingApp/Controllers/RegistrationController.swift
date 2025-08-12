@@ -60,7 +60,7 @@ class RegistrationController: UIViewController {
     let passwordTextField: CustomTextField = {
         let textField = CustomTextField(padding: 24)
         textField.placeholder = "password"
-        textField.isSecureTextEntry = true
+//        textField.isSecureTextEntry = true
         textField.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
 
         return textField
@@ -79,12 +79,31 @@ class RegistrationController: UIViewController {
         return button
     }()
     
+    let alreadyHaveAnAccountLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Aleady have an account?"
+        label.textColor = .whiteSmoke
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    let signinButtonView: UIButton = {
+        let button = UIButton()
+        button.setTitle("Sign In", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        button.addTarget(self, action: #selector(handleSigninButton), for: .touchUpInside)
+        return button
+    }()
+    
     lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             usernameTextField,
             emailTextField,
             passwordTextField,
-            registrationButtomView
+            registrationButtomView,
         ])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
@@ -92,10 +111,22 @@ class RegistrationController: UIViewController {
         return stackView
     }()
     
+    lazy var signinStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            alreadyHaveAnAccountLabel,
+            signinButtonView
+        ])
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        stackView.spacing = 8
+        return stackView
+    }()
+        
     lazy var overallStackView = UIStackView(arrangedSubviews: [
         selectPhotoButtomView,
-        verticalStackView
+        verticalStackView,
     ])
+    
     
     let gradientLayer = CAGradientLayer()
     
@@ -130,6 +161,14 @@ class RegistrationController: UIViewController {
             
             print("Finised registering proccess.")
         }
+    }
+    
+    @objc fileprivate func handleSigninButton() {
+        print("Signin button was taped!")
+        let signinController = UIViewController()
+        signinController.view.backgroundColor = .cyan
+        signinController.modalPresentationStyle = .fullScreen
+        present(signinController, animated: true)
     }
     
     fileprivate func showHUDWithError(error: Error) {
@@ -177,16 +216,6 @@ class RegistrationController: UIViewController {
         
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            print("username canBecomeFirstResponder: \(self.usernameTextField.canBecomeFirstResponder)")
-            print("email canBecomeFirstResponder: \(self.emailTextField.canBecomeFirstResponder)")
-            print("password canBecomeFirstResponder: \(self.passwordTextField.canBecomeFirstResponder)")
-        }
-    }
-    
     @objc fileprivate func handleTextChange(textField: UITextField) {
         if textField == usernameTextField {
             registrationViewModel.username = textField.text
@@ -222,6 +251,14 @@ class RegistrationController: UIViewController {
             overallStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             overallStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
         ])
+        
+        view.addSubview(signinStackView)
+        signinStackView.anchors(
+            top: nil,
+            leading: view.leadingAnchor,
+            trailing: view.trailingAnchor,
+            bottom: view.safeAreaLayoutGuide.bottomAnchor
+        )
     }
         
     override func viewWillLayoutSubviews() {

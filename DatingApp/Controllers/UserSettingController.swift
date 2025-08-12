@@ -267,10 +267,11 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         
         signoutModal.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         signoutModal.addAction(UIAlertAction(title: "Signout", style: .destructive) { _ in
+            try? Auth.auth().signOut()
+            
             let registrationController = RegistrationController()
             registrationController.modalPresentationStyle = .fullScreen
             self.present(registrationController, animated: true)
-            print("Successfully signout!")
         })
         
         present(signoutModal, animated: true)

@@ -34,6 +34,18 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate  {
         fetchCurrentUser()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("Home controller view did appear!!!")
+        // kick the user out when user successfully signout
+        if Auth.auth().currentUser == nil {
+            let registrationController = RegistrationController()
+            let navController = UINavigationController(rootViewController: registrationController)
+            navController.modalPresentationStyle = .fullScreen
+            self.present(navController, animated: true)
+        }
+    }
+    
     fileprivate var user: User?
     
     fileprivate func fetchCurrentUser() {
