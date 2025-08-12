@@ -31,26 +31,16 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate  {
         bottomControls.refreshButtomView.addTarget(self, action: #selector(handleRefresh), for: .touchUpInside)
                 
         setupLayout()
-//        setupFirestoreUserCard()
-//        fetchUserFromFirestore()
-        
         fetchCurrentUser()
-        
     }
     
     fileprivate var user: User?
     
     fileprivate func fetchCurrentUser() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        Firestore.firestore().collection("users").document(uid).getDocument { snapshot, err in
-            if let err = err {
-                print(err)
-                return
-            }
-            
-            guard let dictionary = snapshot?.data() else { return }
-            self.user = User(dictionary: dictionary)
-            print("Save current user information successfully! \(self.user)")
+        Services.fetchCurrentUser { [weak self] user in
+            guard let self = self else { return }
+            self.user = user
+            print("Fetched current user:", user ?? "nil")
             self.fetchUserFromFirestore()
         }
     }
@@ -66,10 +56,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate  {
         let hud = JGProgressHUD(style: .dark)
         hud.textLabel.text = "Fetch User"
         hud.show(in: view)
-//        // fitter fetch only 2 users
-//        let query = Firestore.firestore().collection("users").order(by: "uid").start(after: [lastFetchedUser?.uid ?? " "]).limit(to:  2)
 
-        // fittler base on user ranging age
         let query = Firestore.firestore().collection("users").whereField("age", isGreaterThanOrEqualTo: minAge)
             .whereField("age", isLessThanOrEqualTo: maxAge)
          

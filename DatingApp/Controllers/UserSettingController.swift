@@ -82,21 +82,30 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
     var user: User?
     
     fileprivate func fetchCurrentUser() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        Firestore.firestore().collection("users").document(uid).getDocument { snapshot, err in
-            if let err = err {
-                print(err)
-                return
-            }
-            
-            guard let dictionary = snapshot?.data() else { return }
-            self.user = User(dictionary: dictionary)
-            
+        Services.fetchCurrentUser { [weak self] user in
+            guard let self = self else { return }
+            self.user = user
             self.loadUserPhotos()
-            
             self.tableView.reloadData()
         }
     }
+    
+//    fileprivate func fetchCurrentUser() {
+//        guard let uid = Auth.auth().currentUser?.uid else { return }
+//        Firestore.firestore().collection("users").document(uid).getDocument { snapshot, err in
+//            if let err = err {
+//                print(err)
+//                return
+//            }
+//            
+//            guard let dictionary = snapshot?.data() else { return }
+//            self.user = User(dictionary: dictionary)
+//            
+//            self.loadUserPhotos()
+//            
+//            self.tableView.reloadData()
+//        }
+//    }
     
     fileprivate func loadUserPhotos() {
         guard let images = user?.imageNames else { return }
