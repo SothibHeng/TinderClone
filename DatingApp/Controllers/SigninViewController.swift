@@ -9,7 +9,13 @@ import UIKit
 import Firebase
 import JGProgressHUD
 
+protocol SigninControllerDelegate {
+    func didFinishSigingIn()
+}
+
 class SigninViewController: UIViewController {
+    
+    var delegate: SigninControllerDelegate?
     
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -122,6 +128,8 @@ class SigninViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationItem.hidesBackButton = true
+        
         setupGradientLayer()
         setupLayout()
         overallStackView.bringSubviewToFront(overallStackView)
@@ -180,7 +188,9 @@ class SigninViewController: UIViewController {
             }
             
             print("Sign in successfully!")
-            self.dismiss(animated: true)
+            self.dismiss(animated: true) {
+                self.delegate?.didFinishSigingIn()
+            }
         }
     }
     

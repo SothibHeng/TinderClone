@@ -9,6 +9,10 @@ import UIKit
 import Firebase
 import JGProgressHUD
 
+protocol RegistrationControllerDelegate {
+    func didFinishRegistering()
+}
+
 extension RegistrationController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -25,6 +29,8 @@ extension RegistrationController: UIImagePickerControllerDelegate, UINavigationC
 }
 
 class RegistrationController: UIViewController {
+    
+    var delegate: RegistrationControllerDelegate?
     
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -161,7 +167,7 @@ class RegistrationController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    
         setupGradientLayer()
         setupLayout()
         overallStackView.bringSubviewToFront(overallStackView)
@@ -189,7 +195,9 @@ class RegistrationController: UIViewController {
             }
             
             print("Finised registering proccess.")
-            self?.dismiss(animated: true)
+            self?.dismiss(animated: true, completion: {
+                self?.delegate?.didFinishRegistering()
+            })
         }
     }
     

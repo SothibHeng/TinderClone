@@ -25,7 +25,11 @@ class HeaderLabel: UILabel {
     }
 }
 
-class UserSettingController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class UserSettingController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, SigninControllerDelegate {
+    
+    func didFinishSigingIn() {
+        fetchCurrentUser()
+    }
     
     var delegate: UserSettingControllerDelegate?
     
@@ -270,6 +274,7 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             try? Auth.auth().signOut()
             
             let signInController = SigninViewController()
+            signInController.delegate = self
             let navController = UINavigationController(rootViewController: signInController)
             navController.modalPresentationStyle = .fullScreen
             self.present(navController, animated: true)

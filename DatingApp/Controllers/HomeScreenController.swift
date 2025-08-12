@@ -9,7 +9,7 @@ import UIKit
 import Firebase
 import JGProgressHUD
 
-class HomeScreenController: UIViewController, UserSettingControllerDelegate  {
+class HomeScreenController: UIViewController, UserSettingControllerDelegate, SigninControllerDelegate {
     
     let topStackView = HomeTopControlStackView()
     
@@ -21,6 +21,8 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate  {
     var cardViewModels = [CardViewModel]()
     
     var lastFetchedUser: User?
+    
+    fileprivate var user: User?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,13 +41,16 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate  {
         print("Home controller view did appear!!!")
         if Auth.auth().currentUser == nil {
             let signInController = SigninViewController()
+            signInController.delegate = self
             let navController = UINavigationController(rootViewController: signInController)
             navController.modalPresentationStyle = .fullScreen
             self.present(navController, animated: true)
         }
     }
     
-    fileprivate var user: User?
+    func didFinishSigingIn() {
+        fetchCurrentUser()
+    }
     
     fileprivate func fetchCurrentUser() {
         Services.fetchCurrentUser { [weak self] user in
