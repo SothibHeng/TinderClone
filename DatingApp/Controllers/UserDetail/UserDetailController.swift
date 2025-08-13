@@ -47,6 +47,37 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         return button
     }()
     
+    // create button
+    
+    static func createButton(imageName: String, size: CGSize) -> UIButton {
+        let button = UIButton(type: .system)
+        
+        if let image = UIImage(named: imageName)?.resize(to: size) {
+            button.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
+        } else {
+            print("Warning: Image '\(imageName)' not found.")
+        }
+        
+        button.contentMode = .scaleAspectFit
+        button.clipsToBounds = true
+        return button
+    }
+    
+    let closeButtomView = createButton(
+        imageName: "close",
+        size: CGSize(width: 20, height: 20)
+    )
+    
+    let heartButtomView = createButton(
+        imageName: "heart",
+        size: CGSize(width: 30, height: 30)
+    )
+    
+    let starButtomView = createButton(
+        imageName: "star",
+        size: CGSize(width: 26, height: 26)
+    )
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -94,6 +125,22 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         )
         
         dismissDownArrowButtonView.sizeSubView(size: CGSize(width: 28, height: 28))
+        
+        let buttonStackView = UIStackView(arrangedSubviews: [
+            closeButtomView, heartButtomView, starButtomView
+        ])
+        
+        scrollView.addSubview(buttonStackView)
+        buttonStackView.spacing = 20
+        buttonStackView.distribution = .fillEqually
+        buttonStackView.anchors(
+            top: nil,
+            leading: nil,
+            trailing: nil,
+            bottom: scrollView.safeAreaLayoutGuide.bottomAnchor,
+            bottomConstant: 80
+        )
+        buttonStackView.centerXInSuperview()
     }
     
     fileprivate func setupVisualBlurEffectView() {
