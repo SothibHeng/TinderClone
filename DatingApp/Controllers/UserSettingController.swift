@@ -25,7 +25,26 @@ class HeaderLabel: UILabel {
     }
 }
 
-class UserSettingController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, SigninControllerDelegate {
+class UserSettingController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, SigninControllerDelegate, UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let allowedCharacters = CharacterSet.decimalDigits
+        let characterSet = CharacterSet(charactersIn: string)
+        
+        if let text = textField.text as NSString? {
+            let newText = text.replacingCharacters(in: range, with: string)
+            
+            if newText.isEmpty { return true }
+            
+            if let number = Int(newText), number >= 0 {
+                return allowedCharacters.isSuperset(of: characterSet)
+            } else {
+                return false
+            }
+        }
+        
+        return allowedCharacters.isSuperset(of: characterSet)
+    }
     
     func didFinishSigingIn() {
         fetchCurrentUser()
@@ -172,6 +191,8 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             if let age = user?.age {
                 cell.textField.text = String(age)
             }
+            cell.textField.keyboardType = .numberPad
+            cell.textField.delegate = self
             cell.textField.addTarget(self, action: #selector(handleAgeChange), for: .editingChanged)
             
         case 3:
@@ -267,7 +288,7 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
     @objc fileprivate func handleSignout() {
         let signoutModal = UIAlertController(
             title: "Sign Out", message: "Are you sure you want to signout?", preferredStyle: .alert
-        )
+        ) 
         
         signoutModal.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         signoutModal.addAction(UIAlertAction(title: "Signout", style: .destructive) { _ in
