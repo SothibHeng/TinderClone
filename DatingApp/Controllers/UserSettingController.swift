@@ -15,7 +15,6 @@ protocol UserSettingControllerDelegate {
 }
 
 class CustomImagePickerController: UIImagePickerController {
-    
     var imageButton: UIButton?
 }
 
@@ -171,8 +170,18 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             ageRangeCell.minSliderView.addTarget(self, action: #selector(handleMinAgeSliderChange), for: .valueChanged)
             ageRangeCell.maxSliderView.addTarget(self, action: #selector(handleMaxAgeSliderChange), for: .valueChanged)
             
-            ageRangeCell.minSliderLabel.text = "Min: \(user?.minAge ?? -1)"
-            ageRangeCell.maxSliderLabel.text = "Max: \(user?.maxAge ?? -1)"
+            let minAge = user?.minAge ?? 18
+            let maxAge = user?.maxAge ?? 50
+            
+            ageRangeCell.minSliderLabel.text = "Min: \(minAge)"
+            ageRangeCell.maxSliderLabel.text = "Max: \(maxAge)"
+            ageRangeCell.minSliderView.value = Float(minAge)
+            ageRangeCell.maxSliderView.value = Float(maxAge)
+            
+//            ageRangeCell.minSliderLabel.text = "Min: \(user?.minAge ?? -1)"
+//            ageRangeCell.maxSliderLabel.text = "Max: \(user?.maxAge ?? -1)"
+//            ageRangeCell.minSliderView.value = Float(user?.minAge ?? -1)
+//            ageRangeCell.maxSliderView.value = Float(user?.maxAge ?? -1)
             return ageRangeCell
         }
         
@@ -280,7 +289,7 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(title: "Svae", style: .plain, target: self, action: #selector(handleSave)),
+            UIBarButtonItem(title: "Svae", style: .plain, target: self, action: #selector(handleSaveSetting)),
             UIBarButtonItem(title: "Signout", style: .plain, target: self, action: #selector(handleSignout))
         ]
     }
@@ -304,7 +313,7 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         present(signoutModal, animated: true)
     }
     
-    @objc fileprivate func handleSave() {
+    @objc fileprivate func handleSaveSetting() {
         print("User settings has save!")
         
         guard let uid = Auth.auth().currentUser?.uid else { return }

@@ -78,6 +78,13 @@ struct User: ProducesCardViewModel {
             string: "\n\(professionString )",
             attributes: [.font: UIFont.systemFont(ofSize: 20, weight: .regular)]
         ))
+        
+        if let bio = bio, !bio.isEmpty {
+            attributedText.append(NSAttributedString(
+                string: "\n\(bio)",
+                attributes: [.font: UIFont.systemFont(ofSize: 16, weight: .light)]
+            ))
+        }
           
         return CardViewModel(
             imageNames: imageNames ?? [],

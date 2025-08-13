@@ -13,7 +13,12 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         didSet {
             infoLabel.attributedText = cardViewModel.attributedString
             // render autaul image from CardView
-            
+            if let randomImageName = cardViewModel.imageNames.randomElement(),
+               let image = UIImage(named: randomImageName) {
+                imageView.image = image
+            } else {
+                imageView.image = UIImage(named: "cute-cat")
+            }
         }
     }
     
