@@ -11,8 +11,15 @@ class UserDetailController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .cyan
+        view.backgroundColor = .systemBackground
         
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapDismiss)))
+        
+    }
+    
+    @objc fileprivate func handleTapDismiss() {
+        print("Gature was dismiss!")
+        self.dismiss(animated: true)
     }
 }
 
