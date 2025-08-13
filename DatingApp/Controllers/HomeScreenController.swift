@@ -105,8 +105,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
     
     func didTapMoreInfo() {
         print("Home controller is going to show user detail screen.")
-        let userDetailController = UIViewController()
-        userDetailController.view.backgroundColor = .red
+        let userDetailController = UserDetailController()
         userDetailController.modalPresentationStyle = .fullScreen
         present(userDetailController, animated: true)
     }
