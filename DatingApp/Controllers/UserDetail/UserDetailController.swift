@@ -53,6 +53,7 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         view.backgroundColor = .systemBackground
         
         setupLayout()
+        setupVisualBlurEffectView()
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -95,6 +96,18 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         dismissDownArrowButtonView.sizeSubView(size: CGSize(width: 28, height: 28))
     }
     
+    fileprivate func setupVisualBlurEffectView() {
+        let blurEffect = UIBlurEffect(style: .regular)
+        let visualEffectView = UIVisualEffectView(effect: blurEffect)
+        
+        view.addSubview(visualEffectView)
+        visualEffectView.anchors(
+            top: view.topAnchor,
+            leading: view.leadingAnchor,
+            trailing: view.trailingAnchor,
+            bottom: view.safeAreaLayoutGuide.topAnchor
+        )
+    }
     
     @objc fileprivate func handleDismissArrowDownButton() {
         print("Arrow Down Button was dismiss!")
