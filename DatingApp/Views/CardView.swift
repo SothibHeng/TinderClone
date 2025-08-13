@@ -8,7 +8,13 @@
 import UIKit
 import SDWebImage
 
+protocol CardViewDelegate {
+    func didTapMoreInfo()
+}
+
 class CardView: UIView {
+    
+    var delegate: CardViewDelegate?
     
     var cardViewModel: CardViewModel! {
         didSet {
@@ -72,6 +78,14 @@ class CardView: UIView {
         }
     }
     
+    fileprivate let seeMoreUserInfoButtonView: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "more_info"), for: .normal)
+        button.tintColor = .white
+        button.addTarget(self, action: #selector(hanleSeeMoreUserInfoButton), for: .touchUpInside)
+        return button
+    }()
+    
     fileprivate func setupLayout() {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -95,6 +109,22 @@ class CardView: UIView {
             trailingConstant: 16,
             bottomConstant: 16
         )
+        
+        addSubview(seeMoreUserInfoButtonView)
+        seeMoreUserInfoButtonView.anchors(
+            top: nil,
+            leading: nil,
+            trailing: trailingAnchor,
+            trailingConstant: 16,
+            bottom: bottomAnchor,
+            bottomConstant: 40
+        )
+        seeMoreUserInfoButtonView.sizeSubView(size: CGSize(width: 28 , height: 28))
+    }
+    
+    @objc fileprivate func hanleSeeMoreUserInfoButton() {
+        print("See more user info button was clicked!")
+        delegate?.didTapMoreInfo()
     }
     
     fileprivate func handleEnded(_ gesture: UIPanGestureRecognizer) {

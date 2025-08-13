@@ -9,7 +9,7 @@ import UIKit
 import Firebase
 import JGProgressHUD
 
-class HomeScreenController: UIViewController, UserSettingControllerDelegate, SigninControllerDelegate {
+class HomeScreenController: UIViewController, UserSettingControllerDelegate, SigninControllerDelegate, CardViewDelegate {
     
     let topStackView = HomeTopControlStackView()
     
@@ -85,21 +85,30 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
             snapsot?.documents.forEach({ documentSnapsot in
                 let userDictionary = documentSnapsot.data()
                 let user = User(dictionary: userDictionary)
-                
-                self.cardViewModels.append(user.toCardViewModel())
-                self.lastFetchedUser = user
-                
                 self.setupCardFromUser(user: user)
+                
+//                self.cardViewModels.append(user.toCardViewModel())
+//                self.lastFetchedUser = user
+                
             })
         }
     }
     
     fileprivate func setupCardFromUser(user: User) {
         let cardView = CardView(frame: .zero)
+        cardView.delegate = self
         cardView.cardViewModel = user.toCardViewModel()
         cardSwapView.addSubview(cardView)
         cardSwapView.sendSubviewToBack(cardView)
         cardView.fillInSuperView()
+    }
+    
+    func didTapMoreInfo() {
+        print("Home controller is going to show user detail screen.")
+        let userDetailController = UIViewController()
+        userDetailController.view.backgroundColor = .red
+        userDetailController.modalPresentationStyle = .fullScreen
+        present(userDetailController, animated: true)
     }
     
     @objc func handleUserSetting() {
