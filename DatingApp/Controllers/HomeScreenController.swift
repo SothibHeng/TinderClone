@@ -69,8 +69,8 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         
 //        guard let minAge = user?.minAge, let maxAge = user?.maxAge else { return }
         
-        let minAge = user?.minAge ?? 18
-        let maxAge = user?.maxAge ?? 50
+        let minAge = user?.minAge ?? UserSettingController.defaultMinAge
+        let maxAge = user?.maxAge ?? UserSettingController.defaultMaxAge
         
 
         let hud = JGProgressHUD(style: .dark)

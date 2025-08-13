@@ -163,6 +163,9 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
         return 1
     }
     
+    static let defaultMinAge = 18
+    static let defaultMaxAge = 50
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if indexPath.section == 4 {
@@ -170,8 +173,8 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             ageRangeCell.minSliderView.addTarget(self, action: #selector(handleMinAgeSliderChange), for: .valueChanged)
             ageRangeCell.maxSliderView.addTarget(self, action: #selector(handleMaxAgeSliderChange), for: .valueChanged)
             
-            let minAge = user?.minAge ?? 18
-            let maxAge = user?.maxAge ?? 50
+            let minAge = user?.minAge ?? UserSettingController.defaultMinAge
+            let maxAge = user?.maxAge ?? UserSettingController.defaultMaxAge
             
             ageRangeCell.minSliderLabel.text = "Min: \(minAge)"
             ageRangeCell.maxSliderLabel.text = "Max: \(maxAge)"
