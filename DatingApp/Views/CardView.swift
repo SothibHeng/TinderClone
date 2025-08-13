@@ -9,7 +9,7 @@ import UIKit
 import SDWebImage
 
 protocol CardViewDelegate {
-    func didTapMoreInfo()
+    func didTapMoreInfo(cardViewModel: CardViewModel)
 }
 
 class CardView: UIView {
@@ -124,7 +124,7 @@ class CardView: UIView {
     
     @objc fileprivate func hanleSeeMoreUserInfoButton() {
         print("See more user info button was clicked!")
-        delegate?.didTapMoreInfo()
+        delegate?.didTapMoreInfo(cardViewModel: self.cardViewModel)
     }
     
     fileprivate func handleEnded(_ gesture: UIPanGestureRecognizer) {

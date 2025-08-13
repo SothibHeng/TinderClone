@@ -9,6 +9,14 @@ import UIKit
 
 class UserDetailController: UIViewController, UIScrollViewDelegate {
     
+    var cardViewModel: CardViewModel! {
+        didSet {
+            infoLabel.attributedText = cardViewModel.attributedString
+            // render autaul image from CardView
+            
+        }
+    }
+    
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.alwaysBounceVertical = true
@@ -30,6 +38,13 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         label.text = "Universal 40\nDoctor\nSome bio text goes here..."
         label.numberOfLines = 0
         return label
+    }()
+    
+    let dismissDownArrowButtonView: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "dismiss_down_arrow")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(handleDismissArrowDownButton), for: .touchUpInside)
+        return button
     }()
     
     override func viewDidLoad() {
@@ -55,8 +70,16 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
             bottom: nil
         )
         
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapDismiss)))
-        
+        scrollView.addSubview(dismissDownArrowButtonView)
+        dismissDownArrowButtonView.anchors(
+            top: imageView.bottomAnchor,
+            topConstant: 18,
+            leading: nil,
+            trailing: scrollView.safeAreaLayoutGuide.trailingAnchor,
+            trailingConstant: 16,
+            bottom: nil
+        )
+        dismissDownArrowButtonView.sizeSubView(size: CGSize(width: 28, height: 28))
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -68,8 +91,8 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         imageView.frame = CGRect(x: min(0 , -changeY), y: min(0 , -changeY), width: width, height: width)
     }
     
-    @objc fileprivate func handleTapDismiss() {
-        print("Gature was dismiss!")
+    @objc fileprivate func handleDismissArrowDownButton() {
+        print("Arrow Down Button was dismiss!")
         self.dismiss(animated: true)
     }
 }

@@ -106,9 +106,10 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         cardView.fillInSuperView()
     }
     
-    func didTapMoreInfo() {
-        print("Home controller is going to show user detail screen.")
+    func didTapMoreInfo(cardViewModel: CardViewModel) {
+        print("Home controller:\(cardViewModel.attributedString)")
         let userDetailController = UserDetailController()
+        userDetailController.cardViewModel = cardViewModel
         userDetailController.modalPresentationStyle = .fullScreen
         present(userDetailController, animated: true)
     }
