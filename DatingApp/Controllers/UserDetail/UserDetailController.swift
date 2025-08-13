@@ -52,11 +52,23 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         
         view.backgroundColor = .systemBackground
         
+        setupLayout()
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let changeY = -scrollView.contentOffset.y
+        print(changeY)
+        
+        var width = view.frame.width + changeY * 2
+        width = max(view.frame.width, width)
+        imageView.frame = CGRect(x: min(0 , -changeY), y: min(0 , -changeY), width: width, height: width)
+    }
+    
+    fileprivate func setupLayout() {
         view.addSubview(scrollView)
         scrollView.fillInSuperView()
         
         scrollView.addSubview(imageView)
-        // frame
         imageView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.width)
         
         scrollView.addSubview(infoLabel)
@@ -79,17 +91,10 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
             trailingConstant: 16,
             bottom: nil
         )
+        
         dismissDownArrowButtonView.sizeSubView(size: CGSize(width: 28, height: 28))
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let changeY = -scrollView.contentOffset.y
-        print(changeY)
-        
-        var width = view.frame.width + changeY * 2
-        width = max(view.frame.width, width)
-        imageView.frame = CGRect(x: min(0 , -changeY), y: min(0 , -changeY), width: width, height: width)
-    }
     
     @objc fileprivate func handleDismissArrowDownButton() {
         print("Arrow Down Button was dismiss!")
