@@ -48,8 +48,7 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
     }()
     
     // create button
-    
-    static func createButton(imageName: String, size: CGSize) -> UIButton {
+    func createButton(imageName: String, size: CGSize, selector: Selector) -> UIButton {
         let button = UIButton(type: .system)
         
         if let image = UIImage(named: imageName)?.resize(to: size) {
@@ -60,23 +59,28 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         
         button.contentMode = .scaleAspectFit
         button.clipsToBounds = true
+        button.addTarget(self, action: selector, for: .touchUpInside)
         return button
     }
-    
-    let closeButtomView = createButton(
+
+    lazy var closeButtomView = createButton(
         imageName: "close",
-        size: CGSize(width: 20, height: 20)
+        size: CGSize(width: 20, height: 20), selector: #selector(handleCloseButton)
     )
     
-    let heartButtomView = createButton(
+    lazy var heartButtomView = createButton(
         imageName: "heart",
-        size: CGSize(width: 30, height: 30)
+        size: CGSize(width: 30, height: 30), selector: #selector(handleCloseButton)
     )
     
-    let starButtomView = createButton(
+    lazy var starButtomView = createButton(
         imageName: "star",
-        size: CGSize(width: 26, height: 26)
+        size: CGSize(width: 26, height: 26), selector: #selector(handleCloseButton )
     )
+    
+    @objc fileprivate func handleCloseButton() {
+        print("Button was taped!")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,6 +89,7 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         
         setupLayout()
         setupVisualBlurEffectView()
+        setupButtonControll()
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -94,6 +99,24 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         var width = view.frame.width + changeY * 2
         width = max(view.frame.width, width)
         imageView.frame = CGRect(x: min(0 , -changeY), y: min(0 , -changeY), width: width, height: width)
+    }
+    
+    fileprivate func setupButtonControll() {
+        let buttonStackView = UIStackView(arrangedSubviews: [
+            closeButtomView, starButtomView, heartButtomView
+        ])
+        
+        view.addSubview(buttonStackView)
+        buttonStackView.spacing = 30
+        buttonStackView.distribution = .fillEqually
+        buttonStackView.anchors(
+            top: nil,
+            leading: nil,
+            trailing: nil,
+            bottom: view.safeAreaLayoutGuide.bottomAnchor,
+            bottomConstant: 80
+        )
+        buttonStackView.centerXInSuperview()
     }
     
     fileprivate func setupLayout() {
@@ -125,22 +148,6 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         )
         
         dismissDownArrowButtonView.sizeSubView(size: CGSize(width: 28, height: 28))
-        
-        let buttonStackView = UIStackView(arrangedSubviews: [
-            closeButtomView, heartButtomView, starButtomView
-        ])
-        
-        scrollView.addSubview(buttonStackView)
-        buttonStackView.spacing = 20
-        buttonStackView.distribution = .fillEqually
-        buttonStackView.anchors(
-            top: nil,
-            leading: nil,
-            trailing: nil,
-            bottom: scrollView.safeAreaLayoutGuide.bottomAnchor,
-            bottomConstant: 80
-        )
-        buttonStackView.centerXInSuperview()
     }
     
     fileprivate func setupVisualBlurEffectView() {
