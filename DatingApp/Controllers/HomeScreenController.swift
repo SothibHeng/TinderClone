@@ -85,7 +85,10 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
             snapsot?.documents.forEach({ documentSnapsot in
                 let userDictionary = documentSnapsot.data()
                 let user = User(dictionary: userDictionary)
-                self.setupCardFromUser(user: user)
+                // handle not to show current user show up on card
+                if user.uid != Auth.auth().currentUser?.uid {
+                    self.setupCardFromUser(user: user)
+                }
                 
 //                self.cardViewModels.append(user.toCardViewModel())
 //                self.lastFetchedUser = user
