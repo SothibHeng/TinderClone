@@ -52,6 +52,8 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         return button
     }()
     
+    // inject user swap photo controller 
+    
     // create button
     func createButton(imageName: String, size: CGSize, selector: Selector) -> UIButton {
         let button = UIButton(type: .system)
@@ -82,10 +84,6 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         imageName: "star",
         size: CGSize(width: 26, height: 26), selector: #selector(handleCloseButton )
     )
-    
-    @objc fileprivate func handleCloseButton() {
-        print("Button was taped!")
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -171,6 +169,10 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
     @objc fileprivate func handleDismissArrowDownButton() {
         print("Arrow Down Button was dismiss!")
         self.dismiss(animated: true)
+    }
+    
+    @objc fileprivate func handleCloseButton() {
+        print("Button was taped!")
     }
 }
 

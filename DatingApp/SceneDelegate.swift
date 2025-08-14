@@ -24,6 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
 //        window?.rootViewController = HomeScreenController()
         window?.rootViewController = UINavigationController(rootViewController: HomeScreenController())
+//        window?.rootViewController = UINavigationController(rootViewController: UserDetailSwapPhtotosController(transitionStyle: .scroll, navigationOrientation: .horizontal))
         window?.makeKeyAndVisible()
         
     }
