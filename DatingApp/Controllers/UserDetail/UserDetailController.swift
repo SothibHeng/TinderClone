@@ -7,7 +7,12 @@
 
 import UIKit
 
-class UserDetailController: UIViewController, UIScrollViewDelegate {
+class UserDetailController: UIViewController, UIScrollViewDelegate, UserDetailSwapPhotosDelegate {
+    func didShowPhoto(at index: Int) {
+        for (i, bar) in barViews.enumerated() {
+            bar.backgroundColor = (i == index) ? .white : UIColor(white: 1, alpha: 0.3)
+        }
+    }
     
     fileprivate let extraSwappigHeight: CGFloat = 80
     
@@ -29,9 +34,11 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
                 let shuffledImages = images.shuffled()
                 
                 swappingUserPhotosController = UserDetailSwapPhtotosController(images: shuffledImages)
+                swappingUserPhotosController.photosDelegate = self
                 
                 setupLayout()
                 setupVisualBlurEffectView()
+                setupBarView()
             }
         }
 
@@ -139,6 +146,59 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         dismissDownArrowButtonView.sizeSubView(size: CGSize(width: 28, height: 28))
     }
     
+    fileprivate func setupVisualBlurEffectView() {
+        let blurEffect = UIBlurEffect(style: .regular)
+        let visualEffectView = UIVisualEffectView(effect: blurEffect)
+        
+        view.addSubview(visualEffectView)
+        visualEffectView.anchors(
+            top: view.topAnchor,
+            leading: view.leadingAnchor,
+            trailing: view.trailingAnchor,
+            bottom: view.safeAreaLayoutGuide.topAnchor
+        )
+    }
+    
+    fileprivate var barStackView = UIStackView()
+    fileprivate var barViews: [UIView] = []
+
+    fileprivate func setupBarView() {
+        barStackView.removeFromSuperview()
+        
+        barStackView = UIStackView()
+        barStackView.axis = .horizontal
+        barStackView.spacing = 4
+        barStackView.distribution = .fillEqually
+        
+        barViews = []
+        for _ in 0..<(cardViewModel.imageNames.count) {
+            let bar = UIView()
+            bar.backgroundColor = UIColor(white: 1, alpha: 0.3)
+            bar.layer.cornerRadius = 2
+            bar.clipsToBounds = true
+            barViews.append(bar)
+            barStackView.addArrangedSubview(bar)
+        }
+        
+        if let firstBar = barViews.first {
+            firstBar.backgroundColor = .white
+        }
+        
+        view.addSubview(barStackView)
+        barStackView.anchors(
+            top: view.safeAreaLayoutGuide.topAnchor,
+            topConstant: 8,
+            leading: view.leadingAnchor,
+            leadingConstant: 8,
+            trailing: view.trailingAnchor,
+            trailingConstant: 8,
+            bottom: nil
+        )
+        
+        barStackView.sizeSubView(size: CGSize(width: 0, height: 4))
+    }
+
+    
     fileprivate func setupButtonControll() {
         let buttonStackView = UIStackView(arrangedSubviews: [
             closeButtomView, starButtomView, heartButtomView
@@ -155,19 +215,6 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
             bottomConstant: 80
         )
         buttonStackView.centerXInSuperview()
-    }
-    
-    fileprivate func setupVisualBlurEffectView() {
-        let blurEffect = UIBlurEffect(style: .regular)
-        let visualEffectView = UIVisualEffectView(effect: blurEffect)
-        
-        view.addSubview(visualEffectView)
-        visualEffectView.anchors(
-            top: view.topAnchor,
-            leading: view.leadingAnchor,
-            trailing: view.trailingAnchor,
-            bottom: view.safeAreaLayoutGuide.topAnchor
-        )
     }
     
     @objc fileprivate func handleDismissArrowDownButton() {

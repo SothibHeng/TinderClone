@@ -7,9 +7,15 @@
 
 import UIKit
 
-class UserDetailSwapPhtotosController: UIPageViewController, UIPageViewControllerDataSource {
+protocol UserDetailSwapPhotosDelegate {
+    func didShowPhoto(at index: Int)
+}
+
+class UserDetailSwapPhtotosController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     
     var controllers = [UIViewController]()
+    
+    var photosDelegate: UserDetailSwapPhotosDelegate?
     
     convenience init(images: [UIImage]) {
         self.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
@@ -19,10 +25,12 @@ class UserDetailSwapPhtotosController: UIPageViewController, UIPageViewControlle
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSource = self
+        delegate = self
         view.backgroundColor = .systemBackground
         
         if let first = controllers.first {
             setViewControllers([first], direction: .forward, animated: false)
+            photosDelegate?.didShowPhoto(at: 0)
         }
     }
     
@@ -35,6 +43,15 @@ class UserDetailSwapPhtotosController: UIPageViewController, UIPageViewControlle
         guard let index = controllers.firstIndex(of: viewController), index < controllers.count - 1 else { return nil }
         return controllers[index + 1]
     }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool,
+                                previousViewControllers: [UIViewController],
+                                transitionCompleted completed: Bool) {
+            if completed, let currentVC = viewControllers?.first,
+               let index = controllers.firstIndex(of: currentVC) {
+                photosDelegate?.didShowPhoto(at: index)
+            }
+        }
 }
 
 class UserPhotosController: UIViewController {
