@@ -78,7 +78,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         let query = Firestore.firestore().collection("users").whereField("age", isGreaterThanOrEqualTo: minAge)
             .whereField("age", isLessThanOrEqualTo: maxAge)
         topCardView = nil
-        cardSwapView.subviews.forEach{($0.removeFromSuperview())} // clear old card
+        cardSwapView.subviews.forEach{($0.removeFromSuperview())} // clear old card after save user setting
         query.getDocuments { snapsot, err in
             hud.dismiss()
             if let err = err {
@@ -128,7 +128,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         let translationAnimation = CABasicAnimation(keyPath: "position.x")
         translationAnimation.toValue = traslation
         translationAnimation.duration = duration
-        translationAnimation.fillMode = .backwards
+        translationAnimation.fillMode = .forwards
         translationAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
         translationAnimation.isRemovedOnCompletion = false
         
