@@ -33,14 +33,14 @@ class HomeBottomControlStackView: UIStackView {
         size: CGSize(width: 20, height: 20)
     )
     
-    let heartButtomView = createButton(
-        imageName: "heart",
-        size: CGSize(width: 30, height: 30)
-    )
-    
     let starButtomView = createButton(
         imageName: "star",
         size: CGSize(width: 26, height: 26)
+    )
+    
+    let heartButtomView = createButton(
+        imageName: "heart",
+        size: CGSize(width: 30, height: 30)
     )
     
     let lightingButtomView = createButton(
@@ -55,7 +55,7 @@ class HomeBottomControlStackView: UIStackView {
         axis = .horizontal
         alignment = .fill
         
-        [refreshButtomView, closeButtomView, heartButtomView, starButtomView, lightingButtomView].forEach { button in
+        [refreshButtomView, closeButtomView, starButtomView, heartButtomView, lightingButtomView].forEach { button in
             self.addArrangedSubview(button)
         }
     }

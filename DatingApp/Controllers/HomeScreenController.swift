@@ -31,6 +31,8 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         topStackView.userButtonView.addTarget(self, action: #selector(handleUserSetting), for: .touchUpInside)
         
         bottomControls.refreshButtomView.addTarget(self, action: #selector(handleRefresh), for: .touchUpInside)
+        
+        bottomControls.heartButtomView.addTarget(self, action: #selector(handleLike), for: .touchUpInside)
                 
         setupLayout()
         fetchCurrentUser()
@@ -61,10 +63,6 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         }
     }
     
-    @objc fileprivate func handleRefresh() {
-        fetchUserFromFirestore()
-    }
-    
     fileprivate func fetchUserFromFirestore() {
         
 //        guard let minAge = user?.minAge, let maxAge = user?.maxAge else { return }
@@ -86,24 +84,74 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
                 print("Falied to fetch user \(err)")
                 return
             }
+            
+            // setup nextCardView relation for all card somehow?
+            var previousCardView: CardView?
+            
             snapsot?.documents.forEach({ documentSnapsot in
                 let userDictionary = documentSnapsot.data()
                 let user = User(dictionary: userDictionary)
                 // handle not to show current user show up on card
                 if user.uid != Auth.auth().currentUser?.uid {
-                    self.setupCardFromUser(user: user)
+                    let cardView = self.setupCardFromUser(user: user)
+                    
+                    previousCardView?.nextCardView = cardView
+                    previousCardView = cardView
+                    
+                    if self.topCardView == nil {
+                        self.topCardView = cardView
+                    }
                 }
             })
         }
     }
     
-    fileprivate func setupCardFromUser(user: User) {
+    @objc fileprivate func handleRefresh() {
+        fetchUserFromFirestore()
+    }
+    
+    var topCardView: CardView?
+
+    @objc fileprivate func handleLike() {
+        print("Swap and remove top from top of stack!")
+
+        guard let cardView = topCardView else { return }
+        
+        let direction: CGFloat = 1
+        let angle = 15 * CGFloat.pi / 180 * direction
+        
+        let translation = CGAffineTransform(translationX: 1000 * direction, y: 0)
+        let rotation = CGAffineTransform(rotationAngle: angle)
+        let offScreenTransform = translation.concatenating(rotation)
+        
+        UIView.animate(
+            withDuration: 1.0,
+            delay: 0,
+            usingSpringWithDamping: 0.7,
+            initialSpringVelocity: 1,
+            animations: {
+                cardView.transform = offScreenTransform
+            },
+            completion: { _ in
+                cardView.removeFromSuperview()
+                self.topCardView = cardView.nextCardView
+            }
+        )
+    }
+    
+    func didRemoveCard(cardView: CardView) {
+        cardView.removeFromSuperview()
+        self.topCardView = cardView.nextCardView
+    }
+    
+    fileprivate func setupCardFromUser(user: User) -> CardView {
         let cardView = CardView(frame: .zero)
         cardView.delegate = self
         cardView.cardViewModel = user.toCardViewModel()
         cardSwapView.addSubview(cardView)
         cardSwapView.sendSubviewToBack(cardView)
         cardView.fillInSuperView()
+        return cardView
     }
     
     func didTapMoreInfo(cardViewModel: CardViewModel) {
