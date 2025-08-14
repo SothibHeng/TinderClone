@@ -114,29 +114,31 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
 
     @objc fileprivate func handleLike() {
         print("Swap and remove top from top of stack!")
-
-        guard let cardView = topCardView else { return }
         
-        let direction: CGFloat = 1
-        let angle = 15 * CGFloat.pi / 180 * direction
+        let duration = 0.5
         
-        let translation = CGAffineTransform(translationX: 1000 * direction, y: 0)
-        let rotation = CGAffineTransform(rotationAngle: angle)
-        let offScreenTransform = translation.concatenating(rotation)
+        let translationAnimation = CABasicAnimation(keyPath: "position.x")
+        translationAnimation.toValue = 900
+        translationAnimation.duration = duration
+        translationAnimation.fillMode = .forwards
+        translationAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        translationAnimation.isRemovedOnCompletion = false
         
-        UIView.animate(
-            withDuration: 1.0,
-            delay: 0,
-            usingSpringWithDamping: 0.7,
-            initialSpringVelocity: 1,
-            animations: {
-                cardView.transform = offScreenTransform
-            },
-            completion: { _ in
-                cardView.removeFromSuperview()
-                self.topCardView = cardView.nextCardView
-            }
-        )
+        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotationAnimation.toValue = 15 * CGFloat.pi / 180
+        rotationAnimation.duration = duration
+        
+        let cardView = topCardView
+        topCardView = cardView?.nextCardView
+        
+        CATransaction.setCompletionBlock {
+            cardView?.removeFromSuperview()
+        }
+        
+        cardView?.layer.add(translationAnimation, forKey: "translation")
+        cardView?.layer.add(rotationAnimation, forKey: "rotation")
+        
+        CATransaction.commit()
     }
     
     func didRemoveCard(cardView: CardView) {
