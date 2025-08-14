@@ -9,6 +9,8 @@ import UIKit
 
 class UserDetailController: UIViewController, UIScrollViewDelegate {
     
+    fileprivate let extraSwappigHeight: CGFloat = 80
+    
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.alwaysBounceVertical = true
@@ -96,13 +98,13 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         var width = view.frame.width + changeY * 2
         width = max(view.frame.width, width)
         let imageView = swappingUserPhotosController.view!
-        imageView.frame = CGRect(x: min(0 , -changeY), y: min(0 , -changeY), width: width, height: width)
+        imageView.frame = CGRect(x: min(0 , -changeY), y: min(0 , -changeY), width: width, height: width + extraSwappigHeight)
     }
-    
+        
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        let imageView = swappingUserPhotosController.view!
-        imageView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.width)
+        let swappingView  = swappingUserPhotosController.view!
+        swappingView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.width + extraSwappigHeight)
     }
     
     fileprivate func setupLayout() {
