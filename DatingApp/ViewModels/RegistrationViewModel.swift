@@ -87,7 +87,13 @@ class RegistrationViewModel {
 
     fileprivate func saveInfoToFirestore(completion: @escaping (Error?) -> ()) {
         let uid = Auth.auth().currentUser?.uid ?? ""
-        let docData = ["username": username ?? "", "uid": uid]
+        let docData: [String : Any] = [ 
+            "username": username ?? "",
+            "uid": uid,
+            "age": 18,
+            "minAge": UserSettingController.defaultMinAge,
+            "maxAge": UserSettingController.defaultMaxAge
+        ]
         
         print("Saving user info to Firestore with uid: \(uid), username: \(username ?? "")")
         
