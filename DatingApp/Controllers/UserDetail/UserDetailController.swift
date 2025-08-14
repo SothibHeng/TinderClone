@@ -9,21 +9,6 @@ import UIKit
 
 class UserDetailController: UIViewController, UIScrollViewDelegate {
     
-    var cardViewModel: CardViewModel! {
-        didSet {
-            infoLabel.attributedText = cardViewModel.attributedString
-            
-            let images: [UIImage] = cardViewModel.imageNames
-                .compactMap { UIImage(named: $0) } ?? [UIImage(named: "cute-cat")!]
-            
-            let shuffledImages = images.shuffled()
-            
-            swappingUserPhotosController = UserDetailSwapPhtotosController(images: shuffledImages)
-            
-            setupLayout()
-        }
-    }
-    
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.alwaysBounceVertical = true
@@ -32,7 +17,22 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         return scrollView
     }()
     
-    // inject user swap photo controller
+    var cardViewModel: CardViewModel! {
+            didSet {
+                infoLabel.attributedText = cardViewModel.attributedString
+                
+                let images: [UIImage] = cardViewModel.imageNames
+                    .compactMap { UIImage(named: $0) }
+                
+                let shuffledImages = images.shuffled()
+                
+                swappingUserPhotosController = UserDetailSwapPhtotosController(images: shuffledImages)
+                
+                setupLayout()
+                setupVisualBlurEffectView()
+            }
+        }
+
     var swappingUserPhotosController = UserDetailSwapPhtotosController(transitionStyle: .scroll, navigationOrientation: .horizontal)
     
     let infoLabel: UILabel = {
@@ -49,7 +49,6 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         return button
     }()
     
-    // create button
     func createButton(imageName: String, size: CGSize, selector: Selector) -> UIButton {
         let button = UIButton(type: .system)
         
