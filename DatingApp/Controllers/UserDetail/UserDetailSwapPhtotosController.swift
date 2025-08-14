@@ -9,32 +9,31 @@ import UIKit
 
 class UserDetailSwapPhtotosController: UIPageViewController, UIPageViewControllerDataSource {
     
-    let controllers = [
-        UserPhotosController(image: UIImage(named: "cute-cat")!),
-        UserPhotosController(image: UIImage(named: "cat3")!),
-        UserPhotosController(image: UIImage(named: "cat2")!),
-        UserPhotosController(image: UIImage(named: "dummyImage1")!),
-        UserPhotosController(image: UIImage(named: "dummyImage2")!)
-    ]
+    var controllers = [UIViewController]()
+    
+    convenience init(images: [UIImage]) {
+        self.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
+        self.controllers = images.map { UserPhotosController(image: $0) }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSource = self
-        view.backgroundColor = .cyan
-
-        setViewControllers([controllers.first! ], direction: .forward, animated: false)
+        view.backgroundColor = .systemBackground
+        
+        if let first = controllers.first {
+            setViewControllers([first], direction: .forward, animated: false)
+        }
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        let index = self.controllers.firstIndex(where: {$0 == viewController}) ?? 0
-        if index == 0 { return nil}
+        guard let index = controllers.firstIndex(of: viewController), index > 0 else { return nil }
         return controllers[index - 1]
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        let index = self.controllers.firstIndex(where: {$0 == viewController}) ?? 0
-        if index == controllers.count - 1 { return nil }
-        return controllers[index + 1 ]
+        guard let index = controllers.firstIndex(of: viewController), index < controllers.count - 1 else { return nil }
+        return controllers[index + 1]
     }
 }
 

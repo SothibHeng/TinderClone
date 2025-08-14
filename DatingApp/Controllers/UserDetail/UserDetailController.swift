@@ -12,13 +12,15 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
     var cardViewModel: CardViewModel! {
         didSet {
             infoLabel.attributedText = cardViewModel.attributedString
-            // render autaul image from CardView
-            if let randomImageName = cardViewModel.imageNames.randomElement(),
-               let image = UIImage(named: randomImageName) {
-                imageView.image = image
-            } else {
-                imageView.image = UIImage(named: "cute-cat")
-            }
+            
+            let images: [UIImage] = cardViewModel.imageNames
+                .compactMap { UIImage(named: $0) } ?? [UIImage(named: "cute-cat")!]
+            
+            let shuffledImages = images.shuffled()
+            
+            swappingUserPhotosController = UserDetailSwapPhtotosController(images: shuffledImages)
+            
+            setupLayout()
         }
     }
     
@@ -30,13 +32,8 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         return scrollView
     }()
     
-    let imageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "cute-cat")?.withRenderingMode(.alwaysOriginal))
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.backgroundColor = .green
-        return imageView
-    }()
+    // inject user swap photo controller
+    var swappingUserPhotosController = UserDetailSwapPhtotosController(transitionStyle: .scroll, navigationOrientation: .horizontal)
     
     let infoLabel: UILabel = {
         let label = UILabel()
@@ -51,8 +48,6 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         button.addTarget(self, action: #selector(handleDismissArrowDownButton), for: .touchUpInside)
         return button
     }()
-    
-    // inject user swap photo controller 
     
     // create button
     func createButton(imageName: String, size: CGSize, selector: Selector) -> UIButton {
@@ -101,7 +96,46 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
         
         var width = view.frame.width + changeY * 2
         width = max(view.frame.width, width)
+        let imageView = swappingUserPhotosController.view!
         imageView.frame = CGRect(x: min(0 , -changeY), y: min(0 , -changeY), width: width, height: width)
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        let imageView = swappingUserPhotosController.view!
+        imageView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.width)
+    }
+    
+    fileprivate func setupLayout() {
+        view.addSubview(scrollView)
+        scrollView.fillInSuperView()
+        
+        let swappingView = swappingUserPhotosController.view!
+        
+        scrollView.addSubview(swappingView)
+        
+        scrollView.addSubview(infoLabel)
+        infoLabel.anchors(
+            top: swappingView.bottomAnchor,
+            topConstant: 16,
+            leading: scrollView.leadingAnchor,
+            leadingConstant: 16,
+            trailing: scrollView.trailingAnchor,
+            trailingConstant: 16,
+            bottom: nil
+        )
+        
+        scrollView.addSubview(dismissDownArrowButtonView)
+        dismissDownArrowButtonView.anchors(
+            top: swappingView.bottomAnchor,
+            topConstant: 18,
+            leading: nil,
+            trailing: scrollView.safeAreaLayoutGuide.trailingAnchor,
+            trailingConstant: 16,
+            bottom: nil
+        )
+        
+        dismissDownArrowButtonView.sizeSubView(size: CGSize(width: 28, height: 28))
     }
     
     fileprivate func setupButtonControll() {
@@ -120,37 +154,6 @@ class UserDetailController: UIViewController, UIScrollViewDelegate {
             bottomConstant: 80
         )
         buttonStackView.centerXInSuperview()
-    }
-    
-    fileprivate func setupLayout() {
-        view.addSubview(scrollView)
-        scrollView.fillInSuperView()
-        
-        scrollView.addSubview(imageView)
-        imageView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.width)
-        
-        scrollView.addSubview(infoLabel)
-        infoLabel.anchors(
-            top: imageView.bottomAnchor,
-            topConstant: 16,
-            leading: scrollView.leadingAnchor,
-            leadingConstant: 16,
-            trailing: scrollView.trailingAnchor,
-            trailingConstant: 16,
-            bottom: nil
-        )
-        
-        scrollView.addSubview(dismissDownArrowButtonView)
-        dismissDownArrowButtonView.anchors(
-            top: imageView.bottomAnchor,
-            topConstant: 18,
-            leading: nil,
-            trailing: scrollView.safeAreaLayoutGuide.trailingAnchor,
-            trailingConstant: 16,
-            bottom: nil
-        )
-        
-        dismissDownArrowButtonView.sizeSubView(size: CGSize(width: 28, height: 28))
     }
     
     fileprivate func setupVisualBlurEffectView() {
