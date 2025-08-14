@@ -33,6 +33,8 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         bottomControls.refreshButtomView.addTarget(self, action: #selector(handleRefresh), for: .touchUpInside)
         
         bottomControls.heartButtomView.addTarget(self, action: #selector(handleLike), for: .touchUpInside)
+        
+        bottomControls.closeButtomView.addTarget(self, action: #selector(handleDislike), for: .touchUpInside)
                 
         setupLayout()
         fetchCurrentUser()
@@ -64,9 +66,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
     }
     
     fileprivate func fetchUserFromFirestore() {
-        
-//        guard let minAge = user?.minAge, let maxAge = user?.maxAge else { return }
-        
+                
         let minAge = user?.minAge ?? UserSettingController.defaultMinAge
         let maxAge = user?.maxAge ?? UserSettingController.defaultMaxAge
         
@@ -77,7 +77,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
 
         let query = Firestore.firestore().collection("users").whereField("age", isGreaterThanOrEqualTo: minAge)
             .whereField("age", isLessThanOrEqualTo: maxAge)
-         
+        topCardView = nil
         query.getDocuments { snapsot, err in
             hud.dismiss()
             if let err = err {
@@ -85,7 +85,6 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
                 return
             }
             
-            // setup nextCardView relation for all card somehow?
             var previousCardView: CardView?
             
             snapsot?.documents.forEach({ documentSnapsot in
@@ -111,21 +110,29 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
     }
     
     var topCardView: CardView?
+    
+    let duration = 0.5
 
     @objc fileprivate func handleLike() {
         print("Swap and remove top from top of stack!")
-        
-        let duration = 0.5
-        
+        performSwaping(traslation: 700, angle: 15)
+    }
+    
+    @objc fileprivate func handleDislike() {
+        print("Dislike button was clicked!")
+        performSwaping(traslation: -700, angle: -15)
+    }
+    
+    fileprivate func performSwaping(traslation: CGFloat, angle: CGFloat) {
         let translationAnimation = CABasicAnimation(keyPath: "position.x")
-        translationAnimation.toValue = 900
+        translationAnimation.toValue = traslation
         translationAnimation.duration = duration
-        translationAnimation.fillMode = .forwards
+        translationAnimation.fillMode = .backwards
         translationAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
         translationAnimation.isRemovedOnCompletion = false
         
         let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
-        rotationAnimation.toValue = 15 * CGFloat.pi / 180
+        rotationAnimation.toValue = angle * CGFloat.pi / 180
         rotationAnimation.duration = duration
         
         let cardView = topCardView
