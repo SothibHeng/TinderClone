@@ -78,6 +78,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         let query = Firestore.firestore().collection("users").whereField("age", isGreaterThanOrEqualTo: minAge)
             .whereField("age", isLessThanOrEqualTo: maxAge)
         topCardView = nil
+        cardSwapView.subviews.forEach{($0.removeFromSuperview())} // clear old card
         query.getDocuments { snapsot, err in
             hud.dismiss()
             if let err = err {
@@ -115,15 +116,15 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
 
     @objc fileprivate func handleLike() {
         print("Swap and remove top from top of stack!")
-        performSwaping(traslation: 700, angle: 15)
+        performSwapping(traslation: 700, angle: 15)
     }
     
     @objc fileprivate func handleDislike() {
         print("Dislike button was clicked!")
-        performSwaping(traslation: -700, angle: -15)
+        performSwapping(traslation: -700, angle: -15)
     }
     
-    fileprivate func performSwaping(traslation: CGFloat, angle: CGFloat) {
+    fileprivate func performSwapping(traslation: CGFloat, angle: CGFloat) {
         let translationAnimation = CABasicAnimation(keyPath: "position.x")
         translationAnimation.toValue = traslation
         translationAnimation.duration = duration
@@ -159,6 +160,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         cardView.cardViewModel = user.toCardViewModel()
         cardSwapView.addSubview(cardView)
         cardSwapView.sendSubviewToBack(cardView)
+//        cardSwapView.bringSubviewToFront(cardView)
         cardView.fillInSuperView()
         return cardView
     }
