@@ -22,7 +22,7 @@ struct Advertiser: ProducesCardViewModel {
             .font: UIFont.systemFont(ofSize: 22, weight: .medium)
         ]))
         
-        return CardViewModel(imageNames: [photoPosterName], attributedString: attributedString, textAlignment: .center)
+        return CardViewModel(uid: "", imageNames: [photoPosterName], attributedString: attributedString, textAlignment: .center)
     }
 }
 

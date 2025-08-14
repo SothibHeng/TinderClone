@@ -87,6 +87,7 @@ struct User: ProducesCardViewModel {
         }
           
         return CardViewModel(
+            uid: self.uid ?? "",
             imageNames: imageNames ?? [],
             attributedString: attributedText,
             textAlignment: .left

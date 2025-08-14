@@ -115,12 +115,49 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
     let duration = 0.5
 
     @objc fileprivate func handleLike() {
-        print("Swap and remove top from top of stack!")
+        print("Like button was clicked!")
+        saveSwapeToFirestore(didLike: 1)
         performSwapping(traslation: 700, angle: 15)
+    }
+    
+    fileprivate func saveSwapeToFirestore(didLike: Int) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let cardUID = topCardView?.cardViewModel.uid else { return }
+        let documentData = [cardUID: didLike]
+        
+        // get swipes from firestore before update
+        Firestore.firestore().collection("swapes").document(uid).getDocument { snapshot, err in
+            if let err = err {
+                print("Failed to fetch swipes data from firestore!")
+                return
+            }
+            print("Successfully fetch swipes data from firestore!")
+            
+            // check if data exist then update else set swipes back to store
+            if snapshot?.exists == true {
+                // update data instead
+                Firestore.firestore().collection("swapes").document(uid).updateData(documentData) { err in
+                    if let err = err {
+                        print("Failed to updated swipes information to firestore!", err)
+                        return
+                    }
+                    print("Successfully updated swapes information to firestore!")
+                }
+            } else {
+                Firestore.firestore().collection("swapes").document(uid).setData(documentData) { err in
+                    if let err = err {
+                        print("Failed to save swapes information", err)
+                        return
+                    }
+                    print("Successfully save swaped information!!")
+                }
+            }
+        }
     }
     
     @objc fileprivate func handleDislike() {
         print("Dislike button was clicked!")
+        saveSwapeToFirestore(didLike: 0)
         performSwapping(traslation: -700, angle: -15)
     }
     
