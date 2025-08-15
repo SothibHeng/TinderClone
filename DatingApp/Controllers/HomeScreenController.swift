@@ -125,7 +125,6 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         guard let cardUID = topCardView?.cardViewModel.uid else { return }
         let documentData = [cardUID: didLike]
         
-        // get swipes from firestore before update
         Firestore.firestore().collection("swapes").document(uid).getDocument { snapshot, err in
             if let err = err {
                 print("Failed to fetch swipes data from firestore!")
@@ -133,9 +132,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
             }
             print("Successfully fetch swipes data from firestore!")
             
-            // check if data exist then update else set swipes back to store
             if snapshot?.exists == true {
-                // update data instead
                 Firestore.firestore().collection("swapes").document(uid).updateData(documentData) { err in
                     if let err = err {
                         print("Failed to updated swipes information to firestore!", err)
@@ -197,7 +194,6 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         cardView.cardViewModel = user.toCardViewModel()
         cardSwapView.addSubview(cardView)
         cardSwapView.sendSubviewToBack(cardView)
-//        cardSwapView.bringSubviewToFront(cardView)
         cardView.fillInSuperView()
         return cardView
     }

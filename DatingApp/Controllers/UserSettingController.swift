@@ -181,10 +181,6 @@ class UserSettingController: UITableViewController, UIImagePickerControllerDeleg
             ageRangeCell.minSliderView.value = Float(minAge)
             ageRangeCell.maxSliderView.value = Float(maxAge)
             
-//            ageRangeCell.minSliderLabel.text = "Min: \(user?.minAge ?? -1)"
-//            ageRangeCell.maxSliderLabel.text = "Max: \(user?.maxAge ?? -1)"
-//            ageRangeCell.minSliderView.value = Float(user?.minAge ?? -1)
-//            ageRangeCell.maxSliderView.value = Float(user?.maxAge ?? -1)
             return ageRangeCell
         }
         
