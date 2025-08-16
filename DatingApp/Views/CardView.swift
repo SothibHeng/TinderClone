@@ -131,30 +131,41 @@ class CardView: UIView {
     }
     
     fileprivate func handleEnded(_ gesture: UIPanGestureRecognizer) {
-        let translationX = gesture.translation(in: nil).x
-        let shouldDismiss = abs(translationX) > thresold
+//        let translationX = gesture.translation(in: nil).x
+//        let shouldDismiss = abs(translationX) > thresold
         
-        UIView.animate(
-            withDuration: 0.7,
-            delay: 0,
-            usingSpringWithDamping: 0.7,
-            initialSpringVelocity: 1,
-            animations: {
-                if shouldDismiss {
-                    let direction: CGFloat = translationX > 0 ? 1 : -1
-                    let offScreenTransform = self.transform.translatedBy(x: 1000 * direction, y: 0)
-                    self.transform = offScreenTransform
-                } else {
-                    self.transform = .identity
-                }
-            }) { _ in
-                if shouldDismiss {
-                    self.removeFromSuperview()
-                    
-                    // reset topCardView in HomeScreenController
-                    self.delegate?.didRemoveCard(cardView: self )
-                }
-            }
+        let translationDirection: CGFloat = gesture.translation(in: nil).x > 0 ? 1 : -1
+        let shouldDismiss = abs(gesture.translation(in: nil).x) > thresold
+        
+        guard let homeController = self.delegate as? HomeScreenController else { return }
+        
+        if translationDirection == 1 {
+            homeController.handleLike()
+        } else {
+            homeController.handleDislike()
+        }
+        
+//        UIView.animate(
+//            withDuration: 0.7,
+//            delay: 0,
+//            usingSpringWithDamping: 0.7,
+//            initialSpringVelocity: 1,
+//            animations: {
+//                if shouldDismiss {
+//                    let direction: CGFloat = translationX > 0 ? 1 : -1
+//                    let offScreenTransform = self.transform.translatedBy(x: 1000 * direction, y: 0)
+//                    self.transform = offScreenTransform
+//                } else {
+//                    self.transform = .identity
+//                }
+//            }) { _ in
+//                if shouldDismiss {
+//                    self.removeFromSuperview()
+//                    
+//                    // reset topCardView in HomeScreenController
+//                    self.delegate?.didRemoveCard(cardView: self )
+//                }
+//            }
     }
 
     fileprivate func handleChnaged(_ gesture: UIPanGestureRecognizer) {

@@ -114,7 +114,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
     
     let duration = 0.5
 
-    @objc fileprivate func handleLike() {
+    @objc func handleLike() {
         print("Like button was clicked!")
         saveSwapeToFirestore(didLike: 1)
         performSwapping(traslation: 700, angle: 15)
@@ -152,7 +152,7 @@ class HomeScreenController: UIViewController, UserSettingControllerDelegate, Sig
         }
     }
     
-    @objc fileprivate func handleDislike() {
+    @objc func handleDislike() {
         print("Dislike button was clicked!")
         saveSwapeToFirestore(didLike: 0)
         performSwapping(traslation: -700, angle: -15)
